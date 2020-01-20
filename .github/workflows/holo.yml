@@ -1,0 +1,57 @@
+name: Projections
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  holobranch-projections:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Initialize Chef Habitat artifacts cache directory
+      run: |
+        sudo mkdir -p /hab/cache/artifacts
+        sudo chown runner:docker -R /hab
+    - name: Cache Chef Habitat artifacts
+      uses: actions/cache@v1
+      with:
+        path: /hab/cache/artifacts
+        key: hab-cache-artifacts
+    - name: 'Update holobranch: emergence/skeleton/master'
+      uses: JarvusInnovations/hologit@actions/projector/v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        HAB_LICENSE: accept
+      with:
+        ref: master
+        holobranch: emergence-skeleton
+        commit-to: emergence/skeleton/master
+    - name: 'Update holobranch: emergence/vfs-site/master'
+      uses: JarvusInnovations/hologit@actions/projector/v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        HAB_LICENSE: accept
+      with:
+        ref: master
+        holobranch: emergence-vfs-site
+        commit-to: emergence/vfs-site/master
+    - name: 'Update b21-skeleton.slatepowered.net'
+      env:
+        VFS_DEV_TOKEN: ${{ secrets.VFS_DEV_TOKEN }}
+      run: |
+        # pull latest commit
+        curl -X POST \
+          --silent \
+          -H "Authorization: Token ${VFS_DEV_TOKEN}" \
+          -H "Accept: application/json" \
+          "http://b21-skeleton.slatepowered.net/site-admin/sources/b21-skeleton/pull?fetch=true" \
+          | jq '.'
+
+        # sync VFS to git
+        curl -X POST \
+          --silent \
+          -H "Authorization: Token ${VFS_DEV_TOKEN}" \
+          -H "Accept: application/json" \
+          "http://b21-skeleton.slatepowered.net/site-admin/sources/b21-skeleton/sync-to-vfs" \
+          | jq '.'
