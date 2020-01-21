@@ -1,0 +1,35 @@
+{
+    "name": "slate-cbl-admin",
+    "sencha": {
+        "version": "1.0.0",
+        "namespace": "Slate.cbl.admin",
+        "type": "code",
+        "framework": "ext",
+        "toolkit": "classic",
+        "theme": "theme-neptune",
+        "requires": [
+            "slate-core-data"
+        ],
+        "classpath": [
+            "${package.dir}/src"
+        ],
+        "overrides": [
+            "${package.dir}/overrides"
+        ],
+        "sass": {
+            "namespace": "Slate.cbl.admin",
+            "etc": [
+                "${package.dir}/sass/etc/all.scss"
+            ]
+        },
+        "compressor": {
+            "polyfills": "none"
+        },
+        "output": {
+            "base": "${package.dir}/build",
+            "js": {
+                "version": "ES6"
+            }
+        }
+    }
+}
