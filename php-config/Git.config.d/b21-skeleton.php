@@ -1,17 +1,26 @@
 <?php
 
 Git::$repositories['b21-skeleton'] = [
-    'remote' => 'git@git.jarv.us:b21/b21-skeleton.git',
-    'originBranch' => 'master',
-    'workingBranch' => 'master',
+    'remote' => 'https://github.com/b21network/b21-skeleton.git',
+    'originBranch' => 'emergence/vfs-site/master',
+    'workingBranch' => 'emergence/vfs-site/master',
     'trees' => [
-        'php-config/Git.config.d/b21-skeleton.php',
-        'php-config/Slate/Connectors/DataWarehouse/Connector.config.d',
-
-        'php-classes/Slate/Connectors/DataWarehouse/Connector.php',
+        'api-docs',
+        'console-commands',
+        'content-blocks',
+        'cypress',
         'data-exporters',
-        'event-handlers/Slate/CBL/export-data',
-        'html-templates/connectors/data-warehouse',
-        'site-root/connectors/data-warehouse.php'
+        'dwoo-plugins',
+        'event-handlers',
+        'html-templates',
+        'php-classes',
+        'php-config',
+        'php-migrations',
+        'phpunit-tests',
+        // 'sencha-workspace',
+        'site-root',
+        'site-tasks',
+        'webapp-builds',
+        'webapp-plugin-builds',
     ]
 ];
