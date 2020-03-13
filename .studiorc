@@ -12,7 +12,33 @@ load-cbl-branch() {
     branch_name="${1}"
     [ -z "${branch_name}" ] && { echo >&2 'Usage: load-cbl-branch <branch-name>'; return 1; }
 
+    echo
+    echo "--> Rebuilding and loading site..."
     HOLO_SOURCE_SLATE_CBL="#refs/heads/${branch_name}" \
     HOLO_FETCH="slate-cbl" \
         update-site
+
+    echo
+    echo "--> Rebuilding test environment and reloading database..."
+    HOLO_SOURCE_SLATE_CBL="#refs/heads/${branch_name}" \
+    HOLO_FETCH="slate-cbl" \
+        load-test-database
+
+    echo
+    echo "--> Running all migrations..."
+    hab pkg exec emergence/php-runtime emergence-console-run migrations:execute --all
+
+    echo
+    echo " --> Branch '${branch_name}' loaded and ready to try!"
+}
+
+echo "    * Use 'load-test-database' to reset database to current test data"
+load-test-database() {
+    sql_tree="$(git holo project cypress-workspace):cypress/fixtures/database"
+
+    reset-mysql
+
+    for sql_file in $(git ls-tree --name-only "${sql_tree}"); do
+        git cat-file -p "${sql_tree}/${sql_file}"
+    done | load-sql -
 }
