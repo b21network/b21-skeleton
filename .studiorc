@@ -15,13 +15,13 @@ load-cbl-branch() {
     echo
     echo "--> Rebuilding and loading site..."
     HOLO_SOURCE_SLATE_CBL="#refs/heads/${branch_name}" \
-    HOLO_FETCH="slate-cbl" \
+    HOLO_FETCH="*" \
         update-site
 
     echo
     echo "--> Rebuilding test environment and reloading database..."
     HOLO_SOURCE_SLATE_CBL="#refs/heads/${branch_name}" \
-    HOLO_FETCH="slate-cbl" \
+    HOLO_FETCH="*" \
         load-test-database
 
     echo
