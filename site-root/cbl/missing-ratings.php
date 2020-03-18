@@ -24,10 +24,6 @@ $studentTasks = StudentTask::getAllByWhere([
     'DemonstrationID IS NOT NULL'
 ], ['indexField' => 'DemonstrationID']);
 
-// $demonstrations = Demonstration::getAllByWhere([
-//     'StudentID' => $Student->ID,
-// ], ['indexField' => 'ID']);
-
 $skills = DemonstrationSkill::getAllByWhere([
     'DemonstrationID' => [
         'operator' => 'IN',
@@ -36,17 +32,8 @@ $skills = DemonstrationSkill::getAllByWhere([
     'DemonstratedLevel = 0'
 ]);
 
-if (!empty($_REQUEST['debug'])) {
-    \MICS::dump([
-        'student' => $Student,
-        'studentTasks' => $studentTasks,
-        'skills' => $skills
-    ], 'debug', true);
-}
-
 RequestHandler::respond('missing-ratings', [
     'data' => $skills,
     'tasks' => $studentTasks,
     'Student' => $Student
-    // 'total' => $totalSkills,
 ]);
