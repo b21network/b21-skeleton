@@ -43,15 +43,19 @@ $studentTasks = StudentTask::getTableByQuery('DemonstrationID',
             ON sections.ID = tasks.SectionID
           JOIN `%4$s` terms
             ON terms.ID = sections.TermID
-         WHERE terms.ID IN (%5$s)
-           AND student_tasks.StudentID = %6$u
+          JOIN `%5$s` demonstrations
+            ON demonstrations.ID = student_tasks.DemonstrationID
+         WHERE terms.ID IN (%6$s)
+           AND student_tasks.StudentID = %7$u
            AND student_tasks.DemonstrationID IS NOT NULL
+         ORDER BY sections.Code, demonstrations.Demonstrated
     ',
     [
         StudentTask::$tableName,
         Task::$tableName,
         Section::$tableName,
         Term::$tableName,
+        Demonstration::$tableName,
         join(',', Term::getClosestMasterContainedTermIDs()),
         $Student->ID
     ]
