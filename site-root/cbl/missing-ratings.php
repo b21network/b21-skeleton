@@ -78,7 +78,7 @@ foreach ($skills as $demoSkill) {
         'teacher' => $studentTask->Creator->Username,
         'task' => $studentTask->Task->Title,
         'skill' => $demoSkill->Skill->Code,
-        'demonstration_created_date' => $demoSkill->Demonstration->Created,
+        'demonstration_demonstrated_date' => $demoSkill->Demonstration->Demonstrated,
         'demonstrated_level' => $demoSkill->DemonstratedLevel,
         'link' => sprintf('/cbl/dashboards/tasks/student#%s/%s', $Student == $GLOBALS['Session']->Person ? 'me' : $Student->Username, $studentTask->Task->Section->Code)
     ];
