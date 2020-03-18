@@ -7,6 +7,14 @@
 
     <header class="page-header">
         <h2 class="header-title">Missed Ratings</h2>
+
+        <div class="page-buttons">
+            <span class="button-group">
+                <label class="muted">Download all results:&nbsp;</label>
+                <a class="button small" href="?{refill_query format=json limit=0 offset=0}">JSON</a>
+                <a class="button small" href="?{refill_query format=csv limit=0 offset=0}">CSV</a>
+            </span>
+        </div>
     </header>
 
     {if $.User->hasAccountLevel('Staff')}
@@ -42,19 +50,17 @@
             </tr>
         </thead>
         <tbody>
-        {foreach item=DemonstrationSkill from=$data}
+        {foreach item=row from=$data}
             <tr>
-                <td>{$DemonstrationSkill->Demonstration->Context}</td>
-                <td>{personLink $DemonstrationSkill->Demonstration->Creator}</td>
-                <td>{$DemonstrationSkill->Demonstration->PerformanceType}</td>
-                <td>{$DemonstrationSkill->Skill->Code}</td>
-                <td>{$DemonstrationSkill->Demonstration->Created|date_format}</td>
-                <td>{$DemonstrationSkill->DemonstratedLevel}</td>
-                <td><a href="/cbl/dashboards/tasks/student#{tif $.User == $Student ? 'me' : $Student->Username}/{$tasks[$DemonstrationSkill->DemonstrationID]->Task->Section->Code}">View Tasks Dashboard</a></td>
+                <td>{$row.studio}</td>
+                <td>{$row.teacher}</td>
+                <td>{$row.task}</td>
+                <td>{$row.skill}</td>
+                <td>{$row.demonstration_created_date|date_format}</td>
+                <td>{$row.demonstrated_level}</td>
+                <td><a href="{$row.link}">View Tasks Dashboard</a></td>
             </tr>
         {/foreach}
         </tbody>
     </table>
-
-    {pagingArrows count($data) $total $limit $offset}
 {/block}
