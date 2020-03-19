@@ -56,7 +56,7 @@
                 <td>{$row.teacher}</td>
                 <td>{$row.task}</td>
                 <td>{$row.skill}</td>
-                <td>{$row.demonstration_created_date|date_format}</td>
+                <td>{$row.demonstration_demonstrated_date|date_format}</td>
                 <td>{$row.demonstrated_level}</td>
                 <td><a href="{$row.link}">View Tasks Dashboard</a></td>
             </tr>
