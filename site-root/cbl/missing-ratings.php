@@ -48,7 +48,7 @@ $studentTasks = StudentTask::getTableByQuery('DemonstrationID',
          WHERE terms.ID IN (%6$s)
            AND student_tasks.StudentID = %7$u
            AND student_tasks.DemonstrationID IS NOT NULL
-         ORDER BY sections.Code, demonstrations.Demonstrated
+         ORDER BY sections.Title, demonstrations.Demonstrated
     ',
     [
         StudentTask::$tableName,
@@ -61,13 +61,20 @@ $studentTasks = StudentTask::getTableByQuery('DemonstrationID',
     ]
 );
 
-$skills = DemonstrationSkill::getAllByWhere([
-    'DemonstrationID' => [
-        'operator' => 'IN',
-        'values' => array_keys($studentTasks)
-    ],
-    'DemonstratedLevel = 0'
-]);
+$skills = DemonstrationSkill::getAllByQuery(
+    '
+        SELECT *
+          FROM `%1$s`
+         WHERE DemonstrationID IN (%2$s)
+           AND DemonstratedLevel = 0
+         ORDER BY FIELD(DemonstrationID, %2$s)
+    ',
+    [
+        DemonstrationSkill::$tableName,
+        join(',', array_keys($studentTasks)),
+
+    ]
+);
 
 $responseData = [];
 
@@ -78,7 +85,7 @@ foreach ($skills as $demoSkill) {
         'teacher' => $studentTask->Creator->Username,
         'task' => $studentTask->Task->Title,
         'skill' => $demoSkill->Skill->Code,
-        'demonstration_created_date' => $demoSkill->Demonstration->Created,
+        'demonstration_demonstrated_date' => $demoSkill->Demonstration->Demonstrated,
         'demonstrated_level' => $demoSkill->DemonstratedLevel,
         'link' => sprintf('/cbl/dashboards/tasks/student#%s/%s', $Student == $GLOBALS['Session']->Person ? 'me' : $Student->Username, $studentTask->Task->Section->Code)
     ];
