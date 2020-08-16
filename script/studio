@@ -9,6 +9,9 @@ cd "$(dirname "$0")/.."
 script/-studio-bootstrap
 
 
+unset DEBUG
+
+
 echo
 echo "==> studio: configuring Chef Habitat studio Docker options…"
 STUDIO_NAME="${STUDIO_NAME:-b21skel-studio}"
@@ -23,6 +26,40 @@ export HAB_DOCKER_OPTS="
 echo "${HAB_DOCKER_OPTS}"
 
 
-echo
-echo "==> studio: launching Docker-powered Chef Habitat studio…"
-hab studio enter -D
+launch_studio=true
+if [ "$(docker ps -aq -f name="${STUDIO_NAME}")" ]; then
+    echo
+    echo "==> studio: a ${STUDIO_NAME} container is already running…"
+    echo
+    while true; do
+        read -p "==> studio: would you like to (A)ttach to it, (s)top it, or do (n)othing? [A/s/n] " choice
+        case "${choice}" in
+        r|R|a|A|"")
+            echo
+            echo "==> studio: you can run studio-help at anytime to get a list of commands"
+            echo
+            docker attach "${STUDIO_NAME}"
+            launch_studio=false
+            break;;
+        s|S)
+            echo "==> studio: stopping existing container…"
+            docker stop "${STUDIO_NAME}" > /dev/null
+            break;;
+        n|N)
+            echo "==> studio: doing nothing with existing container… an error is likely to occur"
+            break ;;
+        *)
+            echo "==> studio: $choice is invalid";;
+        esac
+    done
+fi
+
+if [ $launch_studio = true ]; then
+    echo
+    echo "==> studio: launching Docker-powered Chef Habitat studio…"
+    set +e
+    if ! hab studio enter -D; then
+        echo "===> studio: failed to launch studio… try executing the following and try again:"
+        echo "docker rm -f ${STUDIO_NAME}"
+    fi
+fi
