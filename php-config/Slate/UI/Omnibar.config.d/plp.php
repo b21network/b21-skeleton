@@ -30,13 +30,13 @@ Slate\UI\Omnibar::$sources[] = [
         // this is optional, the Jarvus header can just be a menu and not a link too
         //'_href' => 'https://jarv.us',
 
-        'My Progress' => 'http://slate-sandbox.b-21.org:7080/looker-progress',
-        'My Goals' => 'http://slate-sandbox.b-21.org:7080/looker-goals',
-        'My Behavior' => 'http://slate-sandbox.b-21.org:7080/looker-behavior',
-        'My Experience' => 'http://slate-sandbox.b-21.org:7080/looker-experience',
-        'My Plan' => 'http://slate-sandbox.b-21.org:7080/looker-plan',
-        'My Attendance' => 'http://slate-sandbox.b-21.org:7080/looker-attendance',
-        'My Studios' => 'http://slate-sandbox.b-21.org:7080/looker-studios',
-        'My Productivity' => 'http://slate-sandbox.b-21.org:7080/looker-productivity',
+        'My Progress' => '/cbl/dashboards/plp/progress',
+        'My Goals' => '/cbl/dashboards/plp/goals',
+        'My Behavior' => '/cbl/dashboards/plp/behavior',
+        'My Experience' => '/cbl/dashboards/plp/experience',
+        'My Plan' => '/cbl/dashboards/plp/plan',
+        'My Attendance' => '/cbl/dashboards/plp/attendance',
+        'My Studios' => '/cbl/dashboards/plp/studios',
+        'My Productivity' => '/cbl/dashboards/plp/productivity',
     ]
 ];
