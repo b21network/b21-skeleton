@@ -1,5 +1,2 @@
 [holomapping]
-files = [
-    "*/**",
-    "!.github/"
-]
+files = "**"
