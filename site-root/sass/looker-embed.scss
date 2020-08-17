@@ -1,0 +1,36 @@
+body.looker-embed {
+    display: flex;
+    font-weight: normal;
+    flex-direction: column;
+    height: 100vh;
+
+    .site.wrapper {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+    }
+
+    .site.header {
+        background-image: image-url('nodes-bg.jpg');
+        background-size: cover;
+        box-shadow: inset 0 -1px 0 #d4d4d4;
+        padding: 1.5em 7.5%;
+
+        h1 {
+            font-family: Lato;
+            font-size: 2em;
+            font-weight: 100;
+            margin: 0;
+            padding-right: 0.5em;
+        }
+    }
+
+    .site.content {
+        flex: 1;
+
+        iframe {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
