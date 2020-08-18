@@ -66,7 +66,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         'slate-cbl/student-tasks' => [
             'table' => 'studenttask',
             'query' => [
-                'term' => 'current-master'
+                'term' => '*current-master'
             ],
             'headers' => [
                 'StudentFullName' => null,

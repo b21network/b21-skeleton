@@ -41,9 +41,9 @@ return [
         // Term currently overrides {submitted_}date_{before|after} input
         $Term = null;
         if (!empty($input['term'])) {
-            if ($input['term'] === 'current') {
+            if ($input['term'] === '*current') {
                 $Term = Slate\Term::getCurrent();
-            } elseif ($input['term'] === 'current-master') {
+            } elseif ($input['term'] === '*current-master') {
                 $Term = Slate\Term::getCurrent();
                 $Term = $Term ? $Term->getMaster() : null;
             } else {
