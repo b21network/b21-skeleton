@@ -1,4 +1,4 @@
-{extends "./_template.tpl"}
+{extends "../_template.tpl"}
 
 {block "meta"}
     {$dashboardTitle = "My Behavior"}

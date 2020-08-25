@@ -12,7 +12,7 @@
 {block "header-wrapper"}
     <header class="header site">
         {block "header-content"}
-            <h1>My PLP &raquo; {$dashboardTitle}</h1>
+            <h1>{$dashboardTitle}</h1>
         {/block}
     </header>
 {/block}
