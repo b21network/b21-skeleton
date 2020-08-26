@@ -25,18 +25,18 @@
     ]
 ];*/
 
-Slate\UI\Omnibar::$sources[] = [
-    'My PLP' => [
-        // this is optional, the Jarvus header can just be a menu and not a link too
-        //'_href' => 'https://jarv.us',
+if ($GLOBALS['Session']->hasAccountLevel('Administrator')) {
+    Slate\UI\Omnibar::$sources[] = [
+        'School Compass' => [
+            // this is optional, the Jarvus header can just be a menu and not a link too
+            //'_href' => 'https://jarv.us',
 
-        'My Progress' => '/cbl/dashboards/plp/progress',
-        'My Goals' => '/cbl/dashboards/plp/goals',
-        'My Behavior' => '/cbl/dashboards/plp/behavior',
-        'My Experience' => '/cbl/dashboards/plp/experience',
-        'My Plan' => '/cbl/dashboards/plp/plan',
-        'My Attendance' => '/cbl/dashboards/plp/attendance',
-        'My Studios' => '/cbl/dashboards/plp/studios',
-        'My Productivity' => '/cbl/dashboards/plp/productivity',
-    ]
-];
+            'Advisory' => '/cbl/dashboards/admin/advisory',
+            'Attendance' => '/cbl/dashboards/admin/attendance',
+            'Teacher Survey' => '/cbl/dashboards/admin/teacher-survey',
+            'College and Career Readiness' => '/cbl/dashboards/admin/cc-readiness',
+            'Correlations' => '/cbl/dashboards/admin/correlations',
+        ]
+    ];
+}
+
