@@ -31,7 +31,11 @@ if ($GLOBALS['Session']->hasAccountLevel('Administrator')) {
             // this is optional, the Jarvus header can just be a menu and not a link too
             //'_href' => 'https://jarv.us',
 
-            'Progress Lookup' => '/cbl/dashboards/staff/progress-lookup',
+            'Advisory' => '/cbl/dashboards/admin/advisory',
+            'Attendance' => '/cbl/dashboards/admin/attendance',
+            'Teacher Survey' => '/cbl/dashboards/admin/teacher-survey',
+            'College and Career Readiness' => '/cbl/dashboards/admin/cc-readiness',
+            'Correlations' => '/cbl/dashboards/admin/correlations',
         ]
     ];
 }
