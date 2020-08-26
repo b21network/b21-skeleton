@@ -25,9 +25,9 @@
     ]
 ];*/
 
-if ($GLOBALS['Session']->hasAccountLevel('Staff')) {
+if ($GLOBALS['Session']->hasAccountLevel('Administrator')) {
     Slate\UI\Omnibar::$sources[] = [
-        'Charts & Lookups' => [
+        'School Compass' => [
             // this is optional, the Jarvus header can just be a menu and not a link too
             //'_href' => 'https://jarv.us',
 
