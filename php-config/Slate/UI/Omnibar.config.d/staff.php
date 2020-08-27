@@ -1,9 +1,12 @@
 <?php
 
+if (empty($GLOBALS['Session'])) {
+    return;
+}
+
 /*Slate\UI\Omnibar::$sources[] = [
     'Google' => 'https://google.com'
 ];*/
-
 
 /*Slate\UI\Omnibar::$sources[] = [
     'Jarvus' => [
@@ -25,18 +28,14 @@
     ]
 ];*/
 
-Slate\UI\Omnibar::$sources[] = [
-    'My PLP' => [
-        // this is optional, the Jarvus header can just be a menu and not a link too
-        //'_href' => 'https://jarv.us',
+if ($GLOBALS['Session']->hasAccountLevel('Staff')) {
+    Slate\UI\Omnibar::$sources[] = [
+        'Charts & Lookups' => [
+            // this is optional, the Jarvus header can just be a menu and not a link too
+            //'_href' => 'https://jarv.us',
 
-        'My Progress' => '/cbl/dashboards/plp/progress',
-        'My Goals' => '/cbl/dashboards/plp/goals',
-        'My Behavior' => '/cbl/dashboards/plp/behavior',
-        'My Experience' => '/cbl/dashboards/plp/experience',
-        'My Plan' => '/cbl/dashboards/plp/plan',
-        'My Attendance' => '/cbl/dashboards/plp/attendance',
-        'My Studios' => '/cbl/dashboards/plp/studios',
-        'My Productivity' => '/cbl/dashboards/plp/productivity',
-    ]
-];
+            'Progress Lookup' => '/cbl/dashboards/staff/progress-lookup',
+        ]
+    ];
+}
+
