@@ -1,5 +1,9 @@
 <?php
 
+if (empty($GLOBALS['Session'])) {
+    return;
+}
+
 /*Slate\UI\Omnibar::$sources[] = [
     'Google' => 'https://google.com'
 ];*/
