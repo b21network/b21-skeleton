@@ -34,9 +34,7 @@ body.looker-embed {
             width: 100%;
 
             @media only screen and (min-width: 600px) {
-                //padding: 2.5vh 2.5vw; // OR 2.5vmin for even
-                padding-right: 2.5vw;
-                padding-left: 2.5vw;
+                padding: 0 2.5vw;
             }
         }
     }
