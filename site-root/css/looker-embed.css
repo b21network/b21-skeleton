@@ -32,6 +32,13 @@ body.looker-embed .site.content {
 }
 /* line 31, ../sass/looker-embed.scss */
 body.looker-embed .site.content iframe {
-  width: 100%;
+  box-sizing: border-box;
   height: 100%;
+  width: 100%;
+}
+@media only screen and (min-width: 600px) {
+  /* line 31, ../sass/looker-embed.scss */
+  body.looker-embed .site.content iframe {
+    padding: 0 2.5vw;
+  }
 }

@@ -9,5 +9,6 @@ $Attachment = $_EVENT['Record'];
 
 // student attached a drive file
 if ($Attachment->isNew && $Attachment->Context && $Attachment->Context->isA(StudentTask::class) && $Attachment->Creator && $Attachment->Creator->isA(Student::class)) {
-    GoogleDriveFile::syncUsersPermissions([$Attachment]);
+    // note: DISABLED UTNIL GOOGLE DRIVE BATCH API IS UPDATED
+    // GoogleDriveFile::syncUsersPermissions([$Attachment]);
 }
