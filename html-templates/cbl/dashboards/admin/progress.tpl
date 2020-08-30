@@ -1,7 +1,7 @@
 {extends "../_template.tpl"}
 
 {block "meta"}
-    {$dashboardTitle = "Attendance"}
-    {$dashboardId = 26}
+    {$dashboardTitle = "Progress"}
+    {$dashboardId = 24}
     {$dwoo.parent}
 {/block}
