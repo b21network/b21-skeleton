@@ -12,7 +12,7 @@
 {block "header-wrapper"}
     <header class="header site">
         {block "header-content"}
-            <h1>My PLP &raquo; {$dashboardTitle}</h1>
+            <h1>{$dashboardTitle}</h1>
         {/block}
     </header>
 {/block}
@@ -21,7 +21,7 @@
     <main class="content site" role="main">
         {block "iframe"}
             <iframe
-                src="https://building21.looker.com/embed/dashboards/{$dashboardId}?theme=Test&allow_login_screen=true"
+                src="https://building21.looker.com/embed/dashboards/{$dashboardId}?theme=StudentPLP&allow_login_screen=true"
                 scrolling="yes"
                 frameborder="0">
             </iframe>
