@@ -1,6 +1,6 @@
 [holosource]
 url = "https://github.com/SlateFoundation/slate-network-site"
-ref = "refs/tags/v0.0.1-beta"
+ref = "refs/tags/v0.0.1-rc.1"
 
 [holosource.project]
 holobranch = "emergence-layer"
