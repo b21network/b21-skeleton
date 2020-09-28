@@ -89,7 +89,7 @@ return [
                           FROM `%s` ContentArea
                           JOIN `%s` Competency
                             ON Competency.ContentAreaID = ContentArea.ID
-                         WHERE Competency.Code LIKE "OLD%%"
+                         WHERE Competency.Code NOT LIKE "OLD%%"
                     ',
                     [
                         Slate\CBL\ContentArea::$tableName,
