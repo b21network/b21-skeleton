@@ -21,7 +21,7 @@
     <main class="content site" role="main">
         {block "iframe"}
             <iframe
-                src="https://building21.looker.com/embed/{$dashboardType}/{$dashboardId}?theme={$theme}&allow_login_screen=true"
+                src="https://building21.looker.com/embed/{$dashboardType|default:dashboards}/{$dashboardId}?theme={$theme|default:Staff_StudentPLP}&allow_login_screen=true"
                 scrolling="yes"
                 frameborder="0">
             </iframe>
