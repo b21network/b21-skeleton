@@ -28,7 +28,7 @@ if ($GLOBALS['Session']->Person && !empty($GLOBALS['Session']->Person->Wards)) {
 
         $cblTools[$Ward->FirstNamePossessive . ' Competency Dashboard'] = '/cbl/dashboards/demonstrations/student#' . $Ward->Username;
         $cblTools[$Ward->FirstNamePossessive . ' Task Dashboard'] = '/cbl/dashboards/tasks/student#'.$Ward->Username.'/all';
-        $cblTools[$Ward->FirstNamePossessive . ' Missing Ratings'] = '/cbl/missing-ratings';
+        $cblTools[$Ward->FirstNamePossessive . ' Missing Ratings'] = '/cbl/missing-ratings?student='.$Ward->Username;
     }
 }
 
