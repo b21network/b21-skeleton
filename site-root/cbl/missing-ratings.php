@@ -18,6 +18,17 @@ if ($GLOBALS['Session']->hasAccountLevel('Staff')) {
     if (!$Student = Student::getByHandle($_REQUEST['student'])) {
         return RequestHandler::throwInvalidRequestError(sprintf('student %s was not found.', $_REQUEST['student']));
     }
+} else if (!empty($GLOBALS['Session']->Person->Wards)) { // this is a parent account
+    $wardIds = array_map(function($ward) {
+        return $ward->ID;
+    }, $GLOBALS['Session']->Person->Wards);
+
+    if (
+        !($Student = Student::getByHandle($_REQUEST['student'])) ||
+        !in_array($Student->ID, $wardIds)
+    ) {
+        return RequestHandler::throwInvalidRequestError(sprintf('student %s was not found.', $_REQUEST['student']));
+    }
 } else {
     $Student = $GLOBALS['Session']->Person;
 }
@@ -71,7 +82,7 @@ $skills = DemonstrationSkill::getAllByQuery(
     ',
     [
         DemonstrationSkill::$tableName,
-        join(',', array_keys($studentTasks)),
+        !empty($studentTasks) ? join(',', array_keys($studentTasks)) : '0',
 
     ]
 );
@@ -92,5 +103,6 @@ foreach ($skills as $demoSkill) {
 }
 
 RequestHandler::respond('missing-ratings', [
-    'data' => $responseData
+    'data' => $responseData,
+    'student' => $Student
 ], $responseFormat);

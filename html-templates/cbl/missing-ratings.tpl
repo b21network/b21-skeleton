@@ -6,7 +6,7 @@
     {load_templates "subtemplates/paging.tpl"}
 
     <header class="page-header">
-        <h2 class="header-title">Missed Ratings</h2>
+        <h2 class="header-title">{tif $student->ID != $.User->ID ? $student->FirstNamePossessive} Missed Ratings</h2>
 
         <div class="page-buttons">
             <span class="button-group">
