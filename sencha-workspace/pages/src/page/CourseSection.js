@@ -4,7 +4,8 @@ Ext.define('Site.page.CourseSection', {
         'Ext.Ajax',
         'Ext.dom.Element',
 
-        'Site.Common'
+        'Site.Common',
+        'Site.widget.GoogleCalendarEventCreator'
     ],
 
     constructor: function() {
