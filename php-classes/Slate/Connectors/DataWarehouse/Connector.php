@@ -171,14 +171,14 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         ActiveRecord::$useCache = true;
         set_time_limit(0);
 
-        foreach ($Job->Config['exports'] as $exportScript) {
-            if (!isset($configuredExports[$exportScript])) {
-                throw new Exception("Export script $exportScript does not exist or has not yet been configured");
+        foreach ($Job->Config['exports'] as $exportScriptKey) {
+            if (!isset($configuredExports[$exportScriptKey])) {
+                throw new Exception("Export script $exportScriptKey does not exist or has not yet been configured");
             }
 
-            $exportScriptConfig = $configuredExports[$exportScript];
-            $results[$exportScript] = static::pushExport($Job, $exportScript, $exportScriptConfig, $pretend);
-            $backupTables[] = $results[$exportScript]['tempTable'];
+            $exportScriptConfig = $configuredExports[$exportScriptKey];
+            $results[$exportScriptKey] = static::pushExport($Job, $exportScriptKey, $exportScriptConfig, $pretend);
+            $backupTables[] = $results[$exportScriptKey]['tempTable'];
         }
 
         DB::resumeQueryLogging();
@@ -199,8 +199,12 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     }
 
 
-    public static function pushExport(IJob $Job, $scriptPath, array $scriptConfig = [], $pretend = true)
+    public static function pushExport(IJob $Job, $scriptKey, array $scriptConfig = [], $pretend = true)
     {
+        if (empty($scriptPath = $scriptConfig['scriptPath'])) {
+            $scriptPath = $scriptKey;
+        }
+
         $scriptNode = Site::resolvePath("data-exporters/{$scriptPath}.php");
 
         if (!$scriptNode) {
