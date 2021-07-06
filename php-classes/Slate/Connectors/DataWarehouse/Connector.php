@@ -118,6 +118,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         $config = parent::_getJobConfig($requestData);
 
         $config['exports'] = $requestData['exports'];
+        $config['leaveBackups'] = !empty($requestData['leaveBackups']);
 
         return $config;
     }
@@ -183,17 +184,17 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
 
         DB::resumeQueryLogging();
 
-        if (!$pretend) {
+        if (!$pretend && $Job->Config['leaveBackups'] !== true) {
             static::dropBackupTables(static::getPdo(), $backupTables);
+            $Job->log(
+                LogLevel::DEBUG,
+                'Deleted backup tables',
+                [
+                    'backupTables' => $backupTables
+                ]
+            );
         }
 
-        $Job->log(
-            LogLevel::DEBUG,
-            'Deleted backup tables',
-            [
-                'backupTables' => $backupTables
-            ]
-        );
 
         return $results;
     }
@@ -369,9 +370,17 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     protected static function createBackupTableAndCopyData(PostgresConnection $Pdo, array $scriptCfg)
     {
         $schema = static::$postgresSchema;
-        // create backup table and copy data
         $tempTable = $scriptCfg['table'] . '_bak';
-        $Pdo->nonQuery("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all);");
+        $tempTableExists = $Pdo->oneRow("SELECT to_regclass('{$schema}.{$tempTable}') as exists");
+
+        if (empty($tempTableExists['exists'])) {
+            // create backup table
+            $Pdo->nonQuery("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all);");
+        } else {
+            $Pdo->nonQuery("TRUNCATE TABLE $schema.$tempTable");
+        }
+
+        // copy data
         $Pdo->nonQuery("INSERT INTO $schema.{$tempTable} SELECT * FROM $schema.{$scriptCfg['table']}");
 
         return $tempTable;
