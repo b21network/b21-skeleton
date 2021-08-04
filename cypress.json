@@ -1,0 +1,7 @@
+{
+    "baseUrl": "http://localhost:2180",
+    "env": {
+        "STUDIO_CONTAINER": "b21skel-studio",
+        "TEST_USER": "teacher"
+    }
+}

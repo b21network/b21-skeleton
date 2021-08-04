@@ -1,0 +1,7 @@
+site_name: B21 Skeleton Docs
+site_url: https://b21network.github.io/b21-skeleton
+
+theme:
+  palette:
+    primary: "cyan"
+    accent: "orange"

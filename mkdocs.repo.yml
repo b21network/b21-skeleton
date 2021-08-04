@@ -1,0 +1,6 @@
+repo_url: https://github.com/b21network/b21-skeleton
+
+extra:
+  repository:
+    name: slate-cbl
+    url: git@github.com:b21network/b21-skeleton.git
