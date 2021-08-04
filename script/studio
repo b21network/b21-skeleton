@@ -10,6 +10,7 @@ script/-studio-bootstrap
 
 
 unset DEBUG
+[ -n "${1}" ] && cd "${1}"
 
 
 echo
@@ -17,8 +18,10 @@ echo "==> studio: configuring Chef Habitat studio Docker options…"
 STUDIO_NAME="${STUDIO_NAME:-b21skel-studio}"
 export HAB_DOCKER_OPTS="
     --name ${STUDIO_NAME}
-    -p 2190:80
-    -p 2196:3306
+    -p 2180:80
+    -p 2181:7081
+    -p 2188:8000
+    -p 2186:3306
     -v $(cd ~/.ssh; pwd)/known_hosts:/root/.ssh/known_hosts:ro
     --env STUDIO_DEVELOPER_UID=$(id -u)
     --env STUDIO_DEVELOPER_GID=$(id -g)
