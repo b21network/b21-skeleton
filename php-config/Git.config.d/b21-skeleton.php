@@ -8,7 +8,6 @@ Git::$repositories['b21-skeleton'] = [
         'api-docs',
         'console-commands',
         'content-blocks',
-        'cypress',
         'data-exporters',
         'dwoo-plugins',
         'event-handlers',
