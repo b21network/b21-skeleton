@@ -37,6 +37,7 @@ jobs:
         # pull latest commit
         curl -X POST \
           --silent \
+          --fail \
           -H "Authorization: Token ${VFS_DEV_TOKEN}" \
           -H "Accept: application/json" \
           "http://b21-skeleton.slatepowered.net/site-admin/sources/b21-skeleton/pull?fetch=true" \
@@ -45,6 +46,7 @@ jobs:
         # sync VFS to git
         curl -X POST \
           --silent \
+          --fail \
           -H "Authorization: Token ${VFS_DEV_TOKEN}" \
           -H "Accept: application/json" \
           "http://b21-skeleton.slatepowered.net/site-admin/sources/b21-skeleton/sync-to-vfs" \
