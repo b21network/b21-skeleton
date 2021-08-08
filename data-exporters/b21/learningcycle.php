@@ -3,9 +3,9 @@
 use Slate\Term;
 
 return [
-    'title' => 'Slate Terms',
+    'title' => 'Learning Cycle',
     'description' => 'Each row represents a term',
-    'filename' => 'slate-terms',
+    'filename' => 'learningcycle',
     'headers' => [
         'StartDate' => 'Start Date',
         'EndDate' => 'End Date',

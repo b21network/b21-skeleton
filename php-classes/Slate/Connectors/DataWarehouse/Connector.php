@@ -81,7 +81,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'SkillCodes' => 'skillscodes'
             ]
         ],
-        'slate/terms' => [
+        'b21/learningcycle' => [
             'table' => 'learningcycle',
             'query' => [
                 'master-term' => 'current-master'
