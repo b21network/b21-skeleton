@@ -1,3 +1,4 @@
 [holomapping]
-holosource = "slate-fixtures"
+root = "fixtures"
 files = "*.sql"
+after = "*"

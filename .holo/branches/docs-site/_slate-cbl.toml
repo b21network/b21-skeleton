@@ -1,4 +1,4 @@
 [holomapping]
-holosource="=>cypress-workspace"
+holosource="=>docs-skeleton"
 files = "**"
 before = "*"

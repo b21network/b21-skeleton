@@ -118,6 +118,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         $config = parent::_getJobConfig($requestData);
 
         $config['exports'] = $requestData['exports'];
+        $config['leaveBackups'] = !empty($requestData['leaveBackups']);
 
         return $config;
     }
@@ -171,36 +172,40 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         ActiveRecord::$useCache = true;
         set_time_limit(0);
 
-        foreach ($Job->Config['exports'] as $exportScript) {
-            if (!isset($configuredExports[$exportScript])) {
-                throw new Exception("Export script $exportScript does not exist or has not yet been configured");
+        foreach ($Job->Config['exports'] as $exportScriptKey) {
+            if (!isset($configuredExports[$exportScriptKey])) {
+                throw new Exception("Export script $exportScriptKey does not exist or has not yet been configured");
             }
 
-            $exportScriptConfig = $configuredExports[$exportScript];
-            $results[$exportScript] = static::pushExport($Job, $exportScript, $exportScriptConfig, $pretend);
-            $backupTables[] = $results[$exportScript]['tempTable'];
+            $exportScriptConfig = $configuredExports[$exportScriptKey];
+            $results[$exportScriptKey] = static::pushExport($Job, $exportScriptKey, $exportScriptConfig, $pretend);
+            $backupTables[] = $results[$exportScriptKey]['tempTable'];
         }
 
         DB::resumeQueryLogging();
 
-        if (!$pretend) {
+        if (!$pretend && $Job->Config['leaveBackups'] !== true) {
             static::dropBackupTables(static::getPdo(), $backupTables);
+            $Job->log(
+                LogLevel::DEBUG,
+                'Deleted backup tables',
+                [
+                    'backupTables' => $backupTables
+                ]
+            );
         }
 
-        $Job->log(
-            LogLevel::DEBUG,
-            'Deleted backup tables',
-            [
-                'backupTables' => $backupTables
-            ]
-        );
 
         return $results;
     }
 
 
-    public static function pushExport(IJob $Job, $scriptPath, array $scriptConfig = [], $pretend = true)
+    public static function pushExport(IJob $Job, $scriptKey, array $scriptConfig = [], $pretend = true)
     {
+        if (empty($scriptPath = $scriptConfig['scriptPath'])) {
+            $scriptPath = $scriptKey;
+        }
+
         $scriptNode = Site::resolvePath("data-exporters/{$scriptPath}.php");
 
         if (!$scriptNode) {
@@ -365,9 +370,17 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     protected static function createBackupTableAndCopyData(PostgresConnection $Pdo, array $scriptCfg)
     {
         $schema = static::$postgresSchema;
-        // create backup table and copy data
         $tempTable = $scriptCfg['table'] . '_bak';
-        $Pdo->nonQuery("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all);");
+        $tempTableExists = $Pdo->oneRow("SELECT to_regclass('{$schema}.{$tempTable}') as exists");
+
+        if (empty($tempTableExists['exists'])) {
+            // create backup table
+            $Pdo->nonQuery("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all);");
+        } else {
+            $Pdo->nonQuery("TRUNCATE TABLE $schema.$tempTable");
+        }
+
+        // copy data
         $Pdo->nonQuery("INSERT INTO $schema.{$tempTable} SELECT * FROM $schema.{$scriptCfg['table']}");
 
         return $tempTable;

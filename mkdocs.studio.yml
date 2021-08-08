@@ -1,0 +1,7 @@
+extra:
+  studio:
+    name: b21skel-studio
+    web_port: 2180
+    static_port: 2181
+    docs_port: 2188
+    mysql_port: 2186
