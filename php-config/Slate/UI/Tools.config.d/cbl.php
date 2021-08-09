@@ -34,10 +34,6 @@ if ($GLOBALS['Session']->Person && !empty($GLOBALS['Session']->Person->Wards)) {
 
 if ($GLOBALS['Session']->hasAccountLevel('Administrator')) {
     $cblTools['Enrollments Dashboard'] = '/cbl/dashboards/student-competencies/admin';
-    $cblTools['Exports'] = [
-        '_icon' => 'export',
-        '_href' => '/exports'
-    ];
 }
 
 Slate\UI\Tools::$tools['Competency-Based Learning'] = $cblTools;
