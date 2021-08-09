@@ -38,10 +38,6 @@ if ($GLOBALS['Session']->hasAccountLevel('Administrator')) {
         '_icon' => 'export',
         '_href' => '/exports'
     ];
-    $cblTools['Exports (old)'] = [
-        '_icon' => 'export',
-        '_href' => '/cbl/exports'
-    ];
 }
 
 Slate\UI\Tools::$tools['Competency-Based Learning'] = $cblTools;
