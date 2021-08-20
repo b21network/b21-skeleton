@@ -1,3 +1,3 @@
 <?php
 
-Site::$webmasterEmail = 'root@localhost';
+Site::$webmasterEmail = 'ops@slate.is';
