@@ -69,6 +69,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'term' => '*current-master'
             ],
             'headers' => [
+                'PersonID' => null,
                 'StudentFullName' => null,
                 'TermTitle' => null,
 
