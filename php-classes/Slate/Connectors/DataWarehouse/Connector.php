@@ -32,11 +32,6 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             'table' => 'studentportfolio',
             'query' => [],
             'headers' => [
-                'PersonID' => null,
-                'StudentUsername' => null,
-                'StudentFullName' => null,
-                'CompetenciesCount' => null,
-
                 'StudentNumber' => 'studentnumber',
                 'ContentAreaCode' => 'competencyarea',
                 'Level' => 'portfolio',
@@ -53,10 +48,6 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             'table' => 'studentcompetency',
             'query' => [],
             'headers' => [
-                'PersonID' => null,
-                'StudentUsername' => null,
-                'StudentFullName' => null,
-
                 'ID' => 'studentcompetencyslatepk',
                 'StudentNumber' => 'studentnumber',
                 'CompetencyCode' => 'competency',
@@ -77,13 +68,6 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'term' => '*current-master'
             ],
             'headers' => [
-                'StudentID' => null,
-                'StudentUsername' => null,
-                'StudentFullName' => null,
-                'CreatorID' => null,
-                'CreatorFullName' => null,
-                'TermTitle' => null,
-
                 'StudentTaskID' => 'studenttaskslatepk',
                 'StudentNumber' => 'studentnumber',
                 'TaskTitle' => 'tasktitle',
@@ -124,17 +108,6 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'term' => 'current-master'
             ],
             'headers' => [
-                'CreatorID' => null,
-                'CreatorFullName' => null,
-                'StudentID' => null,
-                'StudentUsername' => null,
-                'StudentFullName' => null,
-                'TermTitle' => null,
-                'TermHandle' => null,
-                'StudentTaskID' => null,
-                'CourseCode' => null,
-                'SectionCode' => null,
-
                 'StudentNumber' => 'studentnumber',
                 'Created' => 'created',
                 'DemonstrationSkillID' => 'studentratingslatepk',
