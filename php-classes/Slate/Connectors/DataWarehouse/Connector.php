@@ -32,31 +32,30 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             'table' => 'studentportfolio',
             'query' => [],
             'headers' => [
-                'PersonID' => null,
-                'StudentFullName' => null,
-                'CompetenciesCount' => null,
-
+                'StudentNumber' => 'studentnumber',
                 'ContentAreaCode' => 'competencyarea',
                 'Level' => 'portfolio',
                 'DemonstrationsAverage' => 'performancelevel',
+                'Growth' => 'growth',
+                'Progress' => 'progress',
                 'DemonstrationsRequired' => 'totaler',
                 'DemonstrationsComplete' => 'completeder',
                 'DemonstrationsMissed' => 'misseder',
-                'DemonstrationOpportunities' => 'totalopportunities',
+                'DemonstrationOpportunities' => 'totalopportunities'
             ]
         ],
         'slate-cbl/student-competencies' => [
             'table' => 'studentcompetency',
             'query' => [],
             'headers' => [
-                'PersonID' => null,
-                'StudentFullName' => null,
-
                 'ID' => 'studentcompetencyslatepk',
+                'StudentNumber' => 'studentnumber',
                 'CompetencyCode' => 'competency',
                 'Level' => 'portfolio',
                 'BaselineRating' => 'baseline',
                 'DemonstrationsAverage' => 'performancelevel',
+                'Growth' => 'growth',
+                'Progress' => 'progress',
                 'DemonstrationsRequired' => 'totaler',
                 'DemonstrationsComplete' => 'completeder',
                 'DemonstrationsMissed' => 'misseder',
@@ -69,17 +68,29 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'term' => '*current-master'
             ],
             'headers' => [
-                'PersonID' => null,
-                'StudentFullName' => null,
-                'TermTitle' => null,
-
-                'ID' => 'studenttaskslatepk',
-                'CreatorUsername' => 'teacherstafffk',
+                'StudentTaskID' => 'studenttaskslatepk',
+                'StudentNumber' => 'studentnumber',
+                'TaskTitle' => 'tasktitle',
                 'TaskExperienceType' => 'experiencetype',
+                'CreatorUsername' => 'teacherstafffk',
+                'Created' => 'created',
                 'SectionTitle' => 'experiencename',
                 'Status' => 'currentstatusoftask',
+                'DueDate' => 'duedate',
+                'ExpirationDate' => 'expirationdate',
+                'SubmittedDate' => 'submitteddate',
+                'SkillCodes' => 'skillscodes',
+                'CourseCode' => 'coursenumber',
                 'TermHandle' => 'term',
-                'SkillCodes' => 'skillscodes'
+                'AssignedDate' => 'assigneddate',
+                'TaskID' => 'taskid',
+                'ParentTaskID' => 'parenttaskid',
+                'ClonedTaskID' => 'clonedtaskid',
+                'DemonstrationID' => 'demonstrationid',
+                'SectionCode' => 'sectionnumber',
+                'CourseTitle' => 'coursename',
+                'TeacherAttachments' => 'teacherattachments',
+                'StudentAttachments' => 'studentattachments'
             ]
         ],
         'slate/terms' => [
@@ -97,18 +108,21 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'term' => 'current-master'
             ],
             'headers' => [
-                'StudentID' => null,
-                'CreatorFullName' => null,
-                'StudentFullName' => null,
-
-                'ID' => 'studentratingslatepk',
-                'ArtifactURL' => 'artifact',
-                'Standard' => 'skill',
-                'Portfolio' => 'level',
-                'PerformanceType' => 'tasktitle',
+                'StudentNumber' => 'studentnumber',
+                'Created' => 'created',
+                'DemonstrationSkillID' => 'studentratingslatepk',
+                'CreatorUsername' => 'teacherstafffk',
                 'Context' => 'experiencename',
+                'PerformanceType' => 'tasktitle',
+                'ArtifactURL' => 'artifact',
+                'Competency' => 'competency',
+                'Standard' => 'skill',
+                'Rating' => 'rating',
                 'Level' => 'portfolio',
-                'CreatorUsername' => 'teacherstafffk'
+                'DemonstrationID' => 'demonstrationid',
+                'StudentTaskID' => 'studenttaskid',
+                'CourseCode' => 'coursenumber',
+                'SectionCode' => 'sectionnumber'
             ]
         ]
     ];
@@ -235,10 +249,12 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
 
         $exportRows = call_user_func($exportConfig['buildRows'], $query, $exportConfig);
 
-        $rowColumns = [];
+        $Pdo = static::getPdo();
+
+        $columnMappings = array_filter($scriptConfig['headers']);
+        $rowColumns = static::generateRowColumnsSQL($Pdo, array_values($columnMappings));
         $rows = [];
 
-        $Pdo = static::getPdo();
 
         if (!$pretend) {
             $tempTable = static::createBackupTableAndCopyData($Pdo, $scriptConfig);
@@ -278,10 +294,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             $results['exported']++;
 
             if (!$pretend) {
-                if (empty($rowColumns)) {
-                    $rowColumns = static::generateRowColumnsSQL($Pdo, static::translateRowHeaders($row, $scriptConfig));
-                }
-                $rows[] = static::generateRowSQL($Pdo, static::translateRowHeaders($row, $scriptConfig));
+                $rows[] = static::generateRowSQL($Pdo, static::translateRow($row, $columnMappings));
                 if (static::$chunkInserts && count($rows) >= static::$chunkInserts) {
                     static::exportRows($Pdo, $scriptConfig, $rowColumns, $rows);
                     $rows = [];
@@ -342,25 +355,18 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         }
     }
 
-    protected static function translateRowHeaders(array $row, array $scriptCfg)
+    protected static function translateRow(array $row, array $columnMappings)
     {
         $translated = [];
-        foreach($row as $column => $value) {
-            if (!empty($scriptCfg['headers']) && array_key_exists($column, $scriptCfg['headers'])) {
-                if ($scriptCfg['headers'][$column]) {
-                    $translated[$scriptCfg['headers'][$column]] = $value;
-                }
-            } else {
-                $translated[strtolower($column)] = $value;
-            }
+        foreach ($columnMappings as $inputKey => $outputKey) {
+            $translated[$outputKey] = array_key_exists($inputKey, $row) ? $row[$inputKey] : null;
         }
-
         return $translated;
     }
 
-    protected static function generateRowColumnsSQL(PostgresConnection $Pdo, array $record)
+    protected static function generateRowColumnsSQL(PostgresConnection $Pdo, array $columns)
     {
-        return ' (' . implode(',', array_map([$Pdo, 'quoteIdentifier'], array_keys($record))) . ')';
+        return ' (' . implode(',', array_map([$Pdo, 'quoteIdentifier'], $columns)) . ')';
     }
 
     protected static function generateRowSQL(PostgresConnection $Pdo, array $record)
