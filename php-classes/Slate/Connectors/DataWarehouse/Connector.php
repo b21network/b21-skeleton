@@ -99,7 +99,10 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'master-term' => 'current-master'
             ],
             'headers' => [
-                'Title' => 'term'
+                'Title' => 'term',
+                'StartDate' => 'startdate',
+                'EndDate' => 'enddate',
+                'TermType' => 'termtype'
             ]
         ],
         'slate-cbl/demonstrations' => [
