@@ -127,6 +127,30 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'CourseCode' => 'coursenumber',
                 'SectionCode' => 'sectionnumber'
             ]
+        ],
+        'slate-cbl/demonstrations-history' => [
+            'scriptPath' => 'slate-cbl/demonstrations',
+            'table' => 'studentrating_history',
+            'query' => [
+                // no filter, export _all_ demonstrations ever
+            ],
+            'headers' => [
+                'StudentNumber' => 'studentnumber',
+                'Created' => 'created',
+                'DemonstrationSkillID' => 'studentratingslatepk',
+                'CreatorUsername' => 'teacherstafffk',
+                'Context' => 'experiencename',
+                'PerformanceType' => 'tasktitle',
+                'ArtifactURL' => 'artifact',
+                'Competency' => 'competency',
+                'Standard' => 'skill',
+                'Rating' => 'rating',
+                'Level' => 'portfolio',
+                'DemonstrationID' => 'demonstrationid',
+                'StudentTaskID' => 'studenttaskid',
+                'CourseCode' => 'coursenumber',
+                'SectionCode' => 'sectionnumber'
+            ]
         ]
     ];
 
