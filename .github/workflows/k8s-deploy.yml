@@ -15,7 +15,7 @@ env:
 
   KUBE_CONFIG_DATA: ${{ secrets.KUBECONFIG_BASE64 }}
   KUBE_NAMESPACE: b21-skeleton
-  KUBE_HOSTNAME: b21-skeleton.sandbox.k8s.jarv.us/
+  KUBE_HOSTNAME: b21-skeleton.sandbox.k8s.jarv.us
 
   DATABASE_NAME: b21-skeleton
 
