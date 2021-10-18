@@ -60,7 +60,7 @@ RUN hab pkg exec core/coreutils mkdir -p '/hab/svc/mysql/data' '/hab/svc/site/da
 # configure entrypoint
 VOLUME ["/hab/svc/mysql/data", "/hab/svc/site/data", "/hab/svc/nginx/files"]
 ENTRYPOINT ["hab", "sup", "run"]
-CMD ["codeforphilly/site-composite"]
+CMD ["slate/site-composite"]
 
 # install .hart artifact from builder stage
 COPY --from=projector /hab/cache/artifacts/$HAB_ORIGIN-* /hab/cache/artifacts/
