@@ -4,20 +4,42 @@
             "ELA.1": {
                 "baseline": "10",
                 "average": "9.3",
+                "averageExplanation": "ELA.1 for student has Performance Level 9.3 ((8+9+10+10)/4 = 9.25 rounded to 9.3)",
                 "growth": "-0.7",
-                "progress": "33"
+                "growthExplanation": "ELA.1 for student has -1.5 growth",
+                "progress": "33",
+                "progressExplanation": "ELA.1 for student has 33% Progress (4/12 Demonstrations Required for Competency)"
             },
             "ELA.2": {
                 "baseline": "10",
                 "average": "10.8",
+                "averageExplanation": "ELA.2 for student has Performance Level 9.3 ((11+11+11+10)/4 = 10.75 rounded to 10.8)",
                 "growth": "0.8",
-                "progress": "27"
+                "growthExplanation": "ELA.2 for student has 1 growth",
+                "progress": "27",
+                "progressExplanation": "ELA.2 for student has 33% Progress (4/15 Demonstrations Required for Competency)"
             },
             "ELA.6": {
                 "baseline": "9.5",
                 "average": "10",
                 "growth": "0.5",
                 "progress": "67"
+            }
+        }
+    },
+    "student2":{
+        "ELA":{
+            "ELA.2":{
+                "baseline":"9",
+                "average":null,
+                "growth": null,
+                "progress":"0"
+            },
+            "ELA.3":{
+                "baseline":"9",
+                "average":"9",
+                "growth": "0",
+                "progress":"33"
             }
         }
     },
@@ -32,7 +54,7 @@
             "ELA.2": {
                 "baseline": null,
                 "average": "7.3",
-                "growth": null,
+                "growth": "0",
                 "progress": "40"
             },
             "ELA.3": {
@@ -50,19 +72,19 @@
             "ELA.5": {
                 "baseline": null,
                 "average": "7.4",
-                "growth": null,
+                "growth": "0",
                 "progress": "83"
             },
             "ELA.6": {
                 "baseline": null,
                 "average": "8",
-                "growth": null,
+                "growth": "0",
                 "progress": "33"
             },
             "ELA.7": {
                 "baseline": "7",
                 "average": "7.4",
-                "growth": "0.4",
+                "growth": "0.7",
                 "progress": "63"
             }
         },
@@ -76,7 +98,7 @@
             "SS.2": {
                 "baseline": null,
                 "average": "8",
-                "growth": null,
+                "growth": "0",
                 "progress": "50"
             }
         },
@@ -96,7 +118,7 @@
             "SCI.3": {
                 "baseline": "9.7",
                 "average": "7",
-                "growth": null,
+                "growth": "-2.7",
                 "progress": "33"
             },
             "SCI.4": {
@@ -112,6 +134,148 @@
                 "average": "9.3",
                 "growth": "0.3",
                 "progress": "100"
+            }
+        }
+    },
+    "student4":{
+        "ELA":{
+            "ELA.1":{
+                "baseline":null,
+                "average":"6",
+                "growth":"0" ,
+                "progress":"33"
+            },
+            "ELA.2":{
+                "baseline":null,
+                "average":"6",
+                "growth":null ,
+                "progress":"40"
+            },
+            "ELA.3":{
+                "baseline":null,
+                "average":"7",
+                "growth":"1",
+                "progress":"100"
+            },
+            "ELA.4":{
+                "baseline":null,
+                "average":"6.7",
+                "growth":"0.7" ,
+                "progress":"100"
+            },
+            "ELA.5":{
+                "baseline":null,
+                "average":"7",
+                "growth":"1" ,
+                "progress":"83"
+            },
+            "ELA.6":{
+                "baseline":null,
+                "average":"7",
+                "growth":null ,
+                "progress":"33"
+            },
+            "ELA.7":{
+                "baseline":null,
+                "average":"6.4",
+                "growth":"0.4",
+                "progress":"63"
+            }
+        },
+        "SCI":{
+            "SCI.1":{
+                "baseline":null,
+                "average":"6.6",
+                "growth":"-0.3",
+                "progress":"38"
+            },
+            "SCI.3":{
+                "baseline":null,
+                "average":null,
+                "growth":null,
+                "progress":"0"       
+            }
+        },
+        "NGE":{
+            "NGE.1":{
+                "baseline":null,
+                "average":"9.4",
+                "growth":null,
+                "progress":"35"
+            }
+        },
+        "HOS":{
+            "HOS.1":{
+                "baseline":null,
+                "average":"9.1",
+                "growth":"0.8",
+                "progress":"45"
+            }
+        },
+        "HW":{
+            "HW.1":{
+                "baseline":null,
+                "average":"8",
+                "growth":"0",
+                "progress":"33"
+            },
+            "HW.2":{
+                "baseline":null,
+                "average":"8.4",
+                "growth":null,
+                "progress":"42"
+            },
+            "HW.3":{
+                "baseline":null,
+                "average":"9.2",
+                "growth":"1.2",
+                "progress":"56"
+            }
+        }
+    },
+    "student5":{
+        "ELA":{
+            "ELA.1":{
+                "baseline":"5",
+                "average":"6.5",
+                "growth":"1.5",
+                "progress":"33"
+            },
+            "ELA.2":{
+                "baseline":"5",
+                "average":"7",
+                "growth":"2",
+                "progress":"40"
+            },
+            "ELA.3":{
+                "baseline":5,
+                "average":"8.2",
+                "growth":"3.2",
+                "progress":"100"
+            },
+            "ELA.4":{
+                "baseline":"5",
+                "average":"7.5",
+                "growth":"2.5",
+                "progress":"100"              
+            },
+            "ELA.5":{
+                "baseline":"5",
+                "average":"7",
+                "growth":"2",
+                "progress":"83"              
+            },
+            "ELA.6":{
+                "baseline":"5",
+                "average":"8",
+                "growth":"3",
+                "progress":"33"              
+            },
+            "ELA.7":{
+                "baseline":"5",
+                "average":"6.2",
+                "growth":"1.2",
+                "progress":"63"
             }
         }
     }
