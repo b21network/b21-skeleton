@@ -159,7 +159,7 @@ Ext.define('SlateDemonstrationsTeacher.view.ProgressGrid', {
                                         '<tpl if="Override"> data-span="{[xcount - xindex + 1]}"</tpl>',
                                         ' title="',
                                             '<tpl if="Override">',
-                                                'Overriden',
+                                                '[Overridden]',
                                             '<tpl else>',
                                                 '{[fm.htmlEncode(Slate.cbl.util.Config.getTitleForRating(values.DemonstratedLevel))]}',
                                             '</tpl>',
@@ -772,7 +772,7 @@ Ext.define('SlateDemonstrationsTeacher.view.ProgressGrid', {
             demonstrationsRequired = competency.totalDemonstrationsRequired[level] || competency.totalDemonstrationsRequired.default;
 
             if (countDirty || averageDirty) {
-                percentComplete = 100 * (count || 0) / demonstrationsRequired;
+                percentComplete = demonstrationsRequired === 0 ? 100 : 100 * (count || 0) / demonstrationsRequired;
                 progressCellEl.toggleCls('is-average-low', percentComplete >= 50 && average !== null && average < studentCompetency.get('minimumAverage')); // eslint-disable-line no-extra-parens
             }
 
