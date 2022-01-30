@@ -3,6 +3,18 @@ hab pkg install emergence/studio
 source "$(hab pkg path emergence/studio)/studio.sh"
 
 
+# load postgres
+echo
+echo "--> Set up postgres..."
+hab pkg install --binlink core/postgresql11
+hab svc load core/postgresql11
+
+export PGHOST='localhost'
+export PGUSER='admin'
+export PGPASSWORD='admin'
+export PGDATABASE='postgres'
+
+
 # declare shortcuts
 echo
 echo "--> Setting up b21-skeleton commands..."
@@ -30,17 +42,6 @@ load-cbl-branch() {
 
     echo
     echo " --> Branch '${branch_name}' loaded and ready to try!"
-}
-
-echo "    * Use 'load-test-database' to reset database to current test data"
-load-test-database() {
-    sql_tree="$(git holo project cypress-workspace):cypress/fixtures/database"
-
-    reset-mysql
-
-    for sql_file in $(git ls-tree --name-only "${sql_tree}"); do
-        git cat-file -p "${sql_tree}/${sql_file}"
-    done | load-sql -
 }
 
 echo
