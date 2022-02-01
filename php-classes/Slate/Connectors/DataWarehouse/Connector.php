@@ -93,7 +93,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'StudentAttachments' => 'studentattachments'
             ]
         ],
-        'slate/terms' => [
+        'b21/learningcycle' => [
             'table' => 'learningcycle',
             'query' => [
                 'master-term' => 'current-master'
