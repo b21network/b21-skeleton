@@ -300,6 +300,17 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 $rows[] = static::generateRowSQL($Pdo, static::translateRow($row, $columnMappings));
                 if (static::$chunkInserts && count($rows) >= static::$chunkInserts) {
                     static::exportRows($Pdo, $scriptConfig, $rowColumns, $rows);
+
+                    $Job->log(
+                        LogLevel::DEBUG,
+                        'Wrote chunk of {rowsCount} rows to {tableName} table, {totalRowsExported} total rows exported so far',
+                        [
+                            'rowsCount' => count($rows),
+                            'tableName' => $scriptConfig['table'],
+                            'totalRowsExported' => $results['exported']
+                        ]
+                    );
+
                     $rows = [];
                 }
             }
@@ -308,6 +319,17 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         if (!$pretend) {
             if (count($rows)) {
                 static::exportRows($Pdo, $scriptConfig, $rowColumns, $rows);
+
+                $Job->log(
+                    LogLevel::DEBUG,
+                    'Wrote final chunk of {rowsCount} rows to {tableName} table, {totalRowsExported} total rows exported',
+                    [
+                        'rowsCount' => count($rows),
+                        'tableName' => $scriptConfig['table'],
+                        'totalRowsExported' => $results['exported']
+                    ]
+                );
+
                 $rows = null;
             }
         }
