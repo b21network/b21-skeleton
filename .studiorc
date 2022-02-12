@@ -1,13 +1,14 @@
 #!/bin/bash
-hab pkg install emergence/studio
-source "$(hab pkg path emergence/studio)/studio.sh"
 
 
-# load postgres
+# disable studios printing their own help
+export STUDIO_NOHELP="yes"
+
+
+# set up postgresql for local warehouse dev
 echo
 echo "--> Set up postgres..."
 hab pkg install --binlink core/postgresql11
-hab svc load core/postgresql11
 
 export PGHOST='localhost'
 export PGUSER='admin'
@@ -15,11 +16,14 @@ export PGPASSWORD='admin'
 export PGDATABASE='postgres'
 
 
-# declare shortcuts
-echo
-echo "--> Setting up b21-skeleton commands..."
+# load emergence studio
 
-echo "    * Use 'load-cbl-branch <branch-name>' to rebuild b21-skeleton on top of a different slate-cbl branch"
+hab pkg install emergence/studio
+source "$(hab pkg path emergence/studio)/studio.sh"
+
+
+# declare shortcuts
+STUDIO_HELP['load-cbl-branch <branch-name>']="Rebuild b21-skeleton on top of a different slate-cbl branch"
 load-cbl-branch() {
     branch_name="${1}"
     [ -z "${branch_name}" ] && { echo >&2 'Usage: load-cbl-branch <branch-name>'; return 1; }
@@ -44,4 +48,18 @@ load-cbl-branch() {
     echo " --> Branch '${branch_name}' loaded and ready to try!"
 }
 
+STUDIO_HELP['start-warehouse']="Start local PostgreSQL data warehouse"
+start-warehouse() {
+    hab svc load core/postgresql11
+
+    echo -n "Waiting for server to come online..."
+    until pg_isready --quiet; do echo -n "."; sleep 1; done
+}
+
+
+# final init and output
+studio-help
+
+
+# final blank line
 echo
