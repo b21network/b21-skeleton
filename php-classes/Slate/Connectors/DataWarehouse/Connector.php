@@ -25,7 +25,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     public static $postgresDatabase;
     public static $postgresSchema;
 
-    public static $chunkInserts = 5000;
+    public static $chunkInserts = 1000;
 
     public static $exports = [
         'slate-cbl/student-portfolios' => [
@@ -96,7 +96,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         'slate/terms' => [
             'table' => 'learningcycle',
             'query' => [
-                'master-term' => 'current-master'
+                'master-term' => '*current-master'
             ],
             'headers' => [
                 'Title' => 'term',
@@ -108,7 +108,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         'slate-cbl/demonstrations' => [
             'table' => 'studentrating',
             'query' => [
-                'term' => 'current-master'
+                'term' => '*current-master'
             ],
             'headers' => [
                 'StudentNumber' => 'studentnumber',
@@ -281,7 +281,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
 
         $Job->log(
             LogLevel::DEBUG,
-            'Truncated original table {tableName} {pretendMode}',
+            'Truncated original table {tableName} {pretendMode}, preparing first chunk...',
             [
                 'tableName' => $scriptConfig['table'],
                 'pretendMode' => $pretend ? '(pretend-mode)' : ''
@@ -300,6 +300,17 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 $rows[] = static::generateRowSQL($Pdo, static::translateRow($row, $columnMappings));
                 if (static::$chunkInserts && count($rows) >= static::$chunkInserts) {
                     static::exportRows($Pdo, $scriptConfig, $rowColumns, $rows);
+
+                    $Job->log(
+                        LogLevel::DEBUG,
+                        'Wrote chunk of {rowsCount} rows to {tableName} table, {totalRowsExported} total rows exported so far',
+                        [
+                            'rowsCount' => count($rows),
+                            'tableName' => $scriptConfig['table'],
+                            'totalRowsExported' => $results['exported']
+                        ]
+                    );
+
                     $rows = [];
                 }
             }
@@ -308,6 +319,17 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         if (!$pretend) {
             if (count($rows)) {
                 static::exportRows($Pdo, $scriptConfig, $rowColumns, $rows);
+
+                $Job->log(
+                    LogLevel::DEBUG,
+                    'Wrote final chunk of {rowsCount} rows to {tableName} table, {totalRowsExported} total rows exported',
+                    [
+                        'rowsCount' => count($rows),
+                        'tableName' => $scriptConfig['table'],
+                        'totalRowsExported' => $results['exported']
+                    ]
+                );
+
                 $rows = null;
             }
         }
@@ -354,7 +376,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             $query .= $rowColumns;
             $query .= ' VALUES ';
 
-            $Pdo->nonQuery($query . implode(', ', $rows));
+            $Pdo->execute($query . implode(', ', $rows));
         }
     }
 
@@ -385,13 +407,13 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
 
         if (empty($tempTableExists['exists'])) {
             // create backup table
-            $Pdo->nonQuery("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all);");
+            $Pdo->execute("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all)");
         } else {
-            $Pdo->nonQuery("TRUNCATE TABLE $schema.$tempTable");
+            $Pdo->execute("TRUNCATE TABLE $schema.$tempTable");
         }
 
         // copy data
-        $Pdo->nonQuery("INSERT INTO $schema.{$tempTable} SELECT * FROM $schema.{$scriptCfg['table']}");
+        $Pdo->execute("INSERT INTO $schema.{$tempTable} SELECT * FROM $schema.{$scriptCfg['table']}");
 
         return $tempTable;
     }
@@ -400,14 +422,14 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     {
         $schema = static::$postgresSchema;
         // truncate original table, and insert rows
-        $Pdo->nonQuery("TRUNCATE TABLE $schema.{$scriptCfg['table']} RESTART IDENTITY;");
+        $Pdo->execute("TRUNCATE TABLE $schema.{$scriptCfg['table']} RESTART IDENTITY");
     }
 
     protected static function dropBackupTables(PostgresConnection $Pdo, array $backupTables)
     {
         $schema = static::$postgresSchema;
         foreach ($backupTables as $backup) {
-            $Pdo->nonQuery("DROP TABLE $schema.$backup");
+            $Pdo->execute("DROP TABLE $schema.$backup");
         }
     }
 }

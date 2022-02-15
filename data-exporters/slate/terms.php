@@ -19,9 +19,9 @@ return [
         ];
 
         if (!empty($input['master-term'])) {
-            if ($input['master-term'] === 'current') {
+            if ($input['master-term'] === '*current') {
                 $Term = Slate\Term::getCurrent();
-            } elseif ($input['master-term'] === 'current-master') {
+            } elseif ($input['master-term'] === '*current-master') {
                 $Term = Slate\Term::getCurrent();
                 $Term = $Term ? $Term->getMaster() : null;
             } else {
