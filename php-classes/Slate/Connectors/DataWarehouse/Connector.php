@@ -281,7 +281,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
 
         $Job->log(
             LogLevel::DEBUG,
-            'Truncated original table {tableName} {pretendMode}',
+            'Truncated original table {tableName} {pretendMode}, preparing first chunk...',
             [
                 'tableName' => $scriptConfig['table'],
                 'pretendMode' => $pretend ? '(pretend-mode)' : ''
