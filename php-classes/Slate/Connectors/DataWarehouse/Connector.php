@@ -376,7 +376,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             $query .= $rowColumns;
             $query .= ' VALUES ';
 
-            $Pdo->nonQuery($query . implode(', ', $rows));
+            $Pdo->execute($query . implode(', ', $rows));
         }
     }
 
@@ -407,13 +407,13 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
 
         if (empty($tempTableExists['exists'])) {
             // create backup table
-            $Pdo->nonQuery("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all);");
+            $Pdo->execute("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all)");
         } else {
-            $Pdo->nonQuery("TRUNCATE TABLE $schema.$tempTable");
+            $Pdo->execute("TRUNCATE TABLE $schema.$tempTable");
         }
 
         // copy data
-        $Pdo->nonQuery("INSERT INTO $schema.{$tempTable} SELECT * FROM $schema.{$scriptCfg['table']}");
+        $Pdo->execute("INSERT INTO $schema.{$tempTable} SELECT * FROM $schema.{$scriptCfg['table']}");
 
         return $tempTable;
     }
@@ -422,14 +422,14 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     {
         $schema = static::$postgresSchema;
         // truncate original table, and insert rows
-        $Pdo->nonQuery("TRUNCATE TABLE $schema.{$scriptCfg['table']} RESTART IDENTITY;");
+        $Pdo->execute("TRUNCATE TABLE $schema.{$scriptCfg['table']} RESTART IDENTITY");
     }
 
     protected static function dropBackupTables(PostgresConnection $Pdo, array $backupTables)
     {
         $schema = static::$postgresSchema;
         foreach ($backupTables as $backup) {
-            $Pdo->nonQuery("DROP TABLE $schema.$backup");
+            $Pdo->execute("DROP TABLE $schema.$backup");
         }
     }
 }
