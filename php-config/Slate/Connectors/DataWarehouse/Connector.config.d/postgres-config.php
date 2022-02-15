@@ -2,9 +2,9 @@
 
 namespace Slate\Connectors\DataWarehouse;
 
-Connector::$postgresHost;
-Connector::$postgresPort;
-Connector::$postgresUsername;
-Connector::$postgresPassword;
-Connector::$postgresDatabase;
-Connector::$postgresSchema;
+Connector::$postgresHost = 'localhost';
+Connector::$postgresPort = 5432;
+Connector::$postgresUsername = 'admin';
+Connector::$postgresPassword = 'admin';
+Connector::$postgresDatabase = 'postgres';
+Connector::$postgresSchema = 'slate_testing';
