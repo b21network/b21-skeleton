@@ -22,6 +22,7 @@ export HAB_DOCKER_OPTS="
     -p 2181:7081
     -p 2188:8000
     -p 2186:3306
+    -p 2185:5432
     -v $(cd ~/.ssh; pwd)/known_hosts:/root/.ssh/known_hosts:ro
     --env STUDIO_DEVELOPER_UID=$(id -u)
     --env STUDIO_DEVELOPER_GID=$(id -g)
