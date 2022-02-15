@@ -96,7 +96,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         'slate/terms' => [
             'table' => 'learningcycle',
             'query' => [
-                'master-term' => 'current-master'
+                'master-term' => '*current-master'
             ],
             'headers' => [
                 'Title' => 'term',
@@ -108,7 +108,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         'slate-cbl/demonstrations' => [
             'table' => 'studentrating',
             'query' => [
-                'term' => 'current-master'
+                'term' => '*current-master'
             ],
             'headers' => [
                 'StudentNumber' => 'studentnumber',
