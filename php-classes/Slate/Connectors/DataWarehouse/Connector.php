@@ -25,7 +25,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     public static $postgresDatabase;
     public static $postgresSchema;
 
-    public static $chunkInserts = 5000;
+    public static $chunkInserts = 1000;
 
     public static $exports = [
         'slate-cbl/student-portfolios' => [
