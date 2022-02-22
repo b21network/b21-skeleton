@@ -41,6 +41,18 @@ The `b21-skeleton` development studio includes an installed PostgreSQL server wi
     psql
     ```
 
+### Testing exporters on studio command line
+
+Rather than executing data warehouse connector jobs through the web UI described above, it can be helpful to execute them via the studio command line shell instead. Especially for long-running exports, this can be helpful because log entries will be streamed to the console live as the job progresses rather than concealed until the very end.
+
+1. Visit [`/connectors/data-warehouse/synchronize`](http://localhost:2180/connectors/data-warehouse/synchronize) and configure a non-pretend sync, and check **Create Template**
+2. Click the **Synchronize** button to execute the push, and then open the second link for viewing/managing the template and copy the hexadecimal job handle from the URL
+3. On the studio shell, append the job handle to the `connectors:run-job` console command:
+
+    ```bash
+    console-run connectors:run-job dab58d9434c15f73a7b8ab5e88fea237
+    ```
+
 ### Connecting graphical clients
 
 The `b21-skeleton` studio exposes its built-in PostgreSQL server on port `2185`, so GUI client applications on your development workstation can access the local warehouse by being configured to connect to:
