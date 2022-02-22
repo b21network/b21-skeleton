@@ -16,8 +16,26 @@ The `b21-skeleton` development studio includes an installed PostgreSQL server wi
     start-warehouse
     ```
 
-6. Visit [`/connectors/data-warehouse/synchronize`](http://localhost:2180/connectors/data-warehouse/synchronize) and execute a sync against the local warehouse
-7. Use the command line `psql` client to connect to the local warehouse with the connection details preconfigured in the studio shell's environment:
+6. Copy table structures from test schema in B21 warehouse:
+
+    ```bash
+     hab pkg exec core/postgresql11-client -- pg_dump \
+        --schema-only \
+        --schema=slate_testing \
+        --no-acl \
+        --no-owner \
+        --host='building21data-do-user-5067013-0.db.ondigitalocean.com' \
+        --port='25060' \
+        --dbname='test' \
+        --username='slate_testing' \
+        --password \
+    | psql
+    ```
+
+    Use the password from `Test Warehouse User` in BitWarden when prompted.
+
+7. Visit [`/connectors/data-warehouse/synchronize`](http://localhost:2180/connectors/data-warehouse/synchronize) and execute a sync against the local warehouse
+8. Use the command line `psql` client to connect to the local warehouse with the connection details preconfigured in the studio shell's environment:
 
     ```bash
     psql
