@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://b21network.github.io/b21-skeleton/development/data-warehouse/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.11">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.2.1">
     
     
       
@@ -19,7 +19,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.50e68009.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.e8d9bf0c.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.e6a45f82.min.css">
@@ -643,6 +643,13 @@
   
     <nav class="md-nav" aria-label="Local development">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#testing-exporters-on-studio-command-line" class="md-nav__link">
+    Testing exporters on studio command line
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#connecting-graphical-clients" class="md-nav__link">
@@ -1823,6 +1830,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#testing-exporters-on-studio-command-line" class="md-nav__link">
+    Testing exporters on studio command line
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#connecting-graphical-clients" class="md-nav__link">
     Connecting graphical clients
   </a>
@@ -1851,6 +1865,7 @@
 </a>
 
 
+
 <h1 id="data-warehouse">Data Warehouse<a class="headerlink" href="#data-warehouse" title="Permanent link"> ¶</a></h1>
 <p>Building 21 maintains a PostgreSQL data warehouse for centralized analysis of data across client schools. To facilitate this, the <code>b21-skeleton</code> Slate blueprint includes a <code>DataWarehouse</code> connector that can execute a configurable set of <code>data-exporters/**</code> scripts and write their results into a configured remote PostgreSQL server.</p>
 <h2 id="local-development">Local development<a class="headerlink" href="#local-development" title="Permanent link"> ¶</a></h2>
@@ -1866,11 +1881,38 @@
 </code></pre></div>
 </li>
 <li>
+<p>Copy table structures from test schema in B21 warehouse:</p>
+<div class="highlight"><pre><span></span><code> hab pkg <span class="nb">exec</span> core/postgresql11-client -- pg_dump <span class="se">\</span>
+    --schema-only <span class="se">\</span>
+    --schema<span class="o">=</span>slate_testing <span class="se">\</span>
+    --no-acl <span class="se">\</span>
+    --no-owner <span class="se">\</span>
+    --host<span class="o">=</span><span class="s1">&#39;building21data-do-user-5067013-0.db.ondigitalocean.com&#39;</span> <span class="se">\</span>
+    --port<span class="o">=</span><span class="s1">&#39;25060&#39;</span> <span class="se">\</span>
+    --dbname<span class="o">=</span><span class="s1">&#39;test&#39;</span> <span class="se">\</span>
+    --username<span class="o">=</span><span class="s1">&#39;slate_testing&#39;</span> <span class="se">\</span>
+    --password <span class="se">\</span>
+<span class="p">|</span> psql
+</code></pre></div>
+<p>Use the password from <code>Test Warehouse User</code> in BitWarden when prompted.</p>
+</li>
+<li>
 <p>Visit <a href="http://localhost:2180/connectors/data-warehouse/synchronize"><code>/connectors/data-warehouse/synchronize</code></a> and execute a sync against the local warehouse</p>
 </li>
 <li>
 <p>Use the command line <code>psql</code> client to connect to the local warehouse with the connection details preconfigured in the studio shell&rsquo;s environment:</p>
 <div class="highlight"><pre><span></span><code>psql
+</code></pre></div>
+</li>
+</ol>
+<h3 id="testing-exporters-on-studio-command-line">Testing exporters on studio command line<a class="headerlink" href="#testing-exporters-on-studio-command-line" title="Permanent link"> ¶</a></h3>
+<p>Rather than executing data warehouse connector jobs through the web UI described above, it can be helpful to execute them via the studio command line shell instead. Especially for long-running exports, this can be helpful because log entries will be streamed to the console live as the job progresses rather than concealed until the very end.</p>
+<ol>
+<li>Visit <a href="http://localhost:2180/connectors/data-warehouse/synchronize"><code>/connectors/data-warehouse/synchronize</code></a> and configure a non-pretend sync, and check <strong>Create Template</strong></li>
+<li>Click the <strong>Synchronize</strong> button to execute the push, and then open the second link for viewing/managing the template and copy the hexadecimal job handle from the URL</li>
+<li>
+<p>On the studio shell, append the job handle to the <code>connectors:run-job</code> console command:</p>
+<div class="highlight"><pre><span></span><code>console-run connectors:run-job dab58d9434c15f73a7b8ab5e88fea237
 </code></pre></div>
 </li>
 </ol>
@@ -1948,10 +1990,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.bd0b6b67.min.js"}</script>
     
     
-      <script src="../../assets/javascripts/bundle.5a9542cf.min.js"></script>
+      <script src="../../assets/javascripts/bundle.8aa65030.min.js"></script>
       
         <script src="https://unpkg.com/mermaid@8.5.0/dist/mermaid.min.js"></script>
       
