@@ -16,11 +16,41 @@ The `b21-skeleton` development studio includes an installed PostgreSQL server wi
     start-warehouse
     ```
 
-6. Visit [`/connectors/data-warehouse/synchronize`](http://localhost:2180/connectors/data-warehouse/synchronize) and execute a sync against the local warehouse
-7. Use the command line `psql` client to connect to the local warehouse with the connection details preconfigured in the studio shell's environment:
+6. Copy table structures from test schema in B21 warehouse:
+
+    ```bash
+     hab pkg exec core/postgresql11-client -- pg_dump \
+        --schema-only \
+        --schema=slate_testing \
+        --no-acl \
+        --no-owner \
+        --host='building21data-do-user-5067013-0.db.ondigitalocean.com' \
+        --port='25060' \
+        --dbname='test' \
+        --username='slate_testing' \
+        --password \
+    | psql
+    ```
+
+    Use the password from `Test Warehouse User` in BitWarden when prompted.
+
+7. Visit [`/connectors/data-warehouse/synchronize`](http://localhost:2180/connectors/data-warehouse/synchronize) and execute a sync against the local warehouse
+8. Use the command line `psql` client to connect to the local warehouse with the connection details preconfigured in the studio shell's environment:
 
     ```bash
     psql
+    ```
+
+### Testing exporters on studio command line
+
+Rather than executing data warehouse connector jobs through the web UI described above, it can be helpful to execute them via the studio command line shell instead. Especially for long-running exports, this can be helpful because log entries will be streamed to the console live as the job progresses rather than concealed until the very end.
+
+1. Visit [`/connectors/data-warehouse/synchronize`](http://localhost:2180/connectors/data-warehouse/synchronize) and configure a non-pretend sync, and check **Create Template**
+2. Click the **Synchronize** button to execute the push, and then open the second link for viewing/managing the template and copy the hexadecimal job handle from the URL
+3. On the studio shell, append the job handle to the `connectors:run-job` console command:
+
+    ```bash
+    console-run connectors:run-job dab58d9434c15f73a7b8ab5e88fea237
     ```
 
 ### Connecting graphical clients
