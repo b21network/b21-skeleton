@@ -204,8 +204,8 @@
               "baseline":null,
               "average":"9.1",
               "averageExplanation":"HOS.1 for student has Performance Level 9.1 ((8+9+9+10+8+9+9+11+9)/9 = 9.1111 rounded to 9.1)",
-              "growth":"0.8",
-              "growthExplanation":"HOS.1 for student has 0.8 growth",
+              "growth":null,
+              "growthExplanation":"HOS.1 for student has null growth",
               "progress":"45",
               "progressExplanation":"HOS.1 for student has 45% Progress (9/20 Demonstrations Required for Competency)"
           }
