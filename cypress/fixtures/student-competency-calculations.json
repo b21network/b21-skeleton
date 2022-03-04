@@ -135,8 +135,8 @@
               "baseline":null,
               "average":"6.7",
               "averageExplanation":"ELA.4 for student has Performance Level 6.7 ((7+7+7+6+6+7)/6 = 6.67 rounded to 6.7 )",
-              "growth":"0.7" ,
-              "growthExplanation":"ELA.4 for student has 0.7 growth",
+              "growth":null ,
+              "growthExplanation":"ELA.4 for student has null growth",
               "progress":"100",
               "progressExplanation":"ELA.4 for student has 100% Progress (6/6 Demonstrations Required for Competency)"
           },
