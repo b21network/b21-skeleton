@@ -173,8 +173,8 @@
               "baseline":null,
               "average":"6.6",
               "averageExplanation":"SCI.1 for student has Performance Level 6.6 ((7+6+7+7+7+8+6+5)/8 = 6.625 rounded to 6.6)",
-              "growth":"-0.3",
-              "growthExplanation":"SCI.1 for student has -0.3 growth",
+              "growth":null,
+              "growthExplanation":"SCI.1 for student has null growth",
               "progress":"38",
               "progressExplanation":"SCI.1 for student has 38% Progress (8/21 Demonstrations Required for Competency)"
           },
