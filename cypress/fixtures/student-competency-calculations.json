@@ -233,8 +233,8 @@
               "baseline":null,
               "average":"9.2",
               "averageExplanation":"HW.3 for student has Performance Level 9.2 ((8+9+11+8+10)/5 = 9.2)",
-              "growth":"1.2",
-              "growthExplanation":"HW.3 for student has 1.2 growth",
+              "growth":null,
+              "growthExplanation":"HW.3 for student has null growth",
               "progress":"56",
               "progressExplanation":"HW.3 for student has 56% Progress (5/10 Demonstrations Required for Competency)"
           }
