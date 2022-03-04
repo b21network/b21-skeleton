@@ -126,8 +126,8 @@
               "baseline":null,
               "average":"7",
               "averageExplanation":"ELA.3 for student has Performance Level 7 ((7+7+7+7+7+7)/6 = 7)",
-              "growth":"1",
-              "growthExplanation":"ELA.3 for student has 1 growth",
+              "growth":null,
+              "growthExplanation":"ELA.3 for student has null growth",
               "progress":"100",
               "progressExplanation":"ELA.3 for student has 100% Progress (6/6 Demonstrations Required for Competency)"
           },
