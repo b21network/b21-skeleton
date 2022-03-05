@@ -261,7 +261,7 @@
               "progressExplanation":"ELA.2 for student has 40% Progress (4/10 Demonstrations Required for Competency)"
           },
           "ELA.3":{
-              "baseline":5,
+              "baseline":"5",
               "average":"8.2",
               "averageExplanation":"ELA.3 for student Performance Level 8.2 ((7+8+8+9+9+8)/6 = 8.166666667)",
               "growth":"3.2",
