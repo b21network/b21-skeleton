@@ -3,5 +3,6 @@
     "env": {
         "STUDIO_CONTAINER": "b21skel-studio",
         "TEST_USER": "teacher"
-    }
+    },
+    "redirectionLimit": 100
 }
