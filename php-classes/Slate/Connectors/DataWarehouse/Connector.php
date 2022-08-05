@@ -5,6 +5,7 @@ namespace Slate\Connectors\DataWarehouse;
 use ActiveRecord;
 use DB;
 use Exception;
+use PDOException;
 use Site;
 
 use Emergence\Connectors\IJob;
@@ -203,7 +204,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         DB::resumeQueryLogging();
 
         if (!$pretend && $Job->Config['leaveBackups'] !== true) {
-            static::dropBackupTables(static::getPdo(), $backupTables);
+            static::dropBackupTables($Job, $backupTables);
             $Job->log(
                 LogLevel::DEBUG,
                 'Deleted backup tables',
@@ -252,15 +253,13 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
 
         $exportRows = call_user_func($exportConfig['buildRows'], $query, $exportConfig);
 
-        $Pdo = static::getPdo();
-
         $columnMappings = array_filter($scriptConfig['headers']);
-        $rowColumns = static::generateRowColumnsSQL($Pdo, array_values($columnMappings));
+        $rowColumns = static::generateRowColumnsSQL($Job, array_values($columnMappings));
         $rows = [];
 
 
         if (!$pretend) {
-            $tempTable = static::createBackupTableAndCopyData($Pdo, $scriptConfig);
+            $tempTable = static::createBackupTableAndCopyData($Job, $scriptConfig);
         } else {
             $tempTable = $scriptConfig['table'] . '_bak';
         }
@@ -276,7 +275,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         );
 
         if (!$pretend) {
-            static::truncateOriginalTable($Pdo, $scriptConfig);
+            static::truncateOriginalTable($Job, $scriptConfig);
         }
 
         $Job->log(
@@ -294,12 +293,9 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         ];
 
         foreach ($exportRows as $row) {
-            $results['exported']++;
-
             if (!$pretend) {
-                $rows[] = static::generateRowSQL($Pdo, static::translateRow($row, $columnMappings));
-                if (static::$chunkInserts && count($rows) >= static::$chunkInserts) {
-                    static::exportRows($Pdo, $scriptConfig, $rowColumns, $rows);
+                if (static::$chunkInserts && count($rows) === static::$chunkInserts) {
+                    static::exportRows($Job, $scriptConfig, $rowColumns, $rows);
 
                     $Job->log(
                         LogLevel::DEBUG,
@@ -313,16 +309,21 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
 
                     $rows = [];
                 }
+                $rows[] = static::generateRowSQL($Job, static::translateRow($row, $columnMappings));
             }
+            $results['exported']++;
         }
 
         if (!$pretend) {
             if (count($rows)) {
-                static::exportRows($Pdo, $scriptConfig, $rowColumns, $rows);
+                static::exportRows($Job, $scriptConfig, $rowColumns, $rows);
 
+                $logMessage = 'Wrote ';
+                $logMessage .= (static::$chunkInserts ? 'final chunk of' : '');
+                $logMessage .= ' {rowsCount} rows to {tableName} table, {totalRowsExported} total rows exported';
                 $Job->log(
                     LogLevel::DEBUG,
-                    'Wrote final chunk of {rowsCount} rows to {tableName} table, {totalRowsExported} total rows exported',
+                    $logMessage,
                     [
                         'rowsCount' => count($rows),
                         'tableName' => $scriptConfig['table'],
@@ -348,35 +349,89 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     }
 
     // helper methods
-    public static function getPdo()
+    public static function getPdo(IJob $Job, $reconnect = false)
     {
-        static $Pdo;
+        static $Pdo = null;
 
-        if ($Pdo === null) {
-            $Pdo = PostgresConnection::createInstance([
-                'host' => static::$postgresHost,
-                'port' => static::$postgresPort,
-                'username' => static::$postgresUsername,
-                'password' => static::$postgresPassword,
-                'database' => static::$postgresDatabase,
-                'search_path' => [static::$postgresSchema]
-            ]);
+        if ($Pdo === null || $reconnect === true) {
+            if ($reconnect === true) {
+                $Job->log(
+                    LogLevel::DEBUG,
+                    'Attempting to reconnect...'
+                );
+            }
+            $Pdo = static::retry($Job, function() {
+                return PostgresConnection::createInstance([
+                    'host' => static::$postgresHost,
+                    'port' => static::$postgresPort,
+                    'username' => static::$postgresUsername,
+                    'password' => static::$postgresPassword,
+                    'database' => static::$postgresDatabase,
+                    'search_path' => [static::$postgresSchema]
+                ]);
+            }, [Exception::class, PDOException::class], 5, 15, 2);
         }
 
         return $Pdo;
     }
 
-    protected static function exportRows(PostgresConnection $Pdo, array $scriptCfg, $rowColumns, array $rows)
+    protected static function retry(IJob $Job,  callable $callable, $expectedErrors, $maxRetries = 5, $initialWait = 1.0, $exponent = 2, callable $afterException = null)
     {
-        $query = '';
+        if (! is_array($expectedErrors)) {
+            $expectedErrors = [$expectedErrors];
+        }
+
+        try {
+            return call_user_func($callable);
+        } catch (Exception $e) {
+            // get whole inheritance chain
+            $errors = class_parents($e);
+            array_push($errors, get_class($e));
+
+            // if unexpected, re-throw
+            if (! array_intersect($errors, $expectedErrors)) {
+                throw $e;
+            }
+
+            $Job->log(
+                LogLevel::ERROR,
+                'Error: {errorMessage}',
+                [
+                    'errorMessage' => $e->getMessage()
+                ]
+            );
+
+            if (! empty($afterException) && is_callable($afterException)) {
+                call_user_func($afterException, $e);
+            }
+
+            // exponential backoff
+            if ($maxRetries > 0) {
+                usleep((int) ($initialWait * 1E6));
+
+                return static::retry($Job, $callable, $expectedErrors, $maxRetries - 1, $initialWait * $exponent, $exponent, $afterException);
+            }
+
+            // max retries reached
+            throw $e;
+        }
+    }
+
+    protected static function exportRows(IJob $Job, array $scriptCfg, $rowColumns, array $rows)
+    {
 
         if (!empty($rows)) {
-            $query .= 'INSERT INTO ' . $Pdo->quoteIdentifier($scriptCfg['table']);
-            $query .= ' ';
-            $query .= $rowColumns;
-            $query .= ' VALUES ';
-
-            $Pdo->execute($query . implode(', ', $rows));
+            static::retry($Job, function() use ($Job, $rows, $rowColumns, $scriptCfg) {
+                $Pdo = static::getPdo($Job);
+                $query = '';
+                $query .= 'INSERT INTO ' . $Pdo->quoteIdentifier($scriptCfg['table']);
+                $query .= ' ';
+                $query .= $rowColumns;
+                $query .= ' VALUES ';
+                $Pdo->execute($query . implode(', ', $rows));
+            }, [PDOException::class, Exception::class], 5, 15, 2, function() use($Job) {
+                static::getPdo($Job, true);
+            });
         }
     }
 
@@ -389,47 +444,64 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         return $translated;
     }
 
-    protected static function generateRowColumnsSQL(PostgresConnection $Pdo, array $columns)
+    protected static function generateRowColumnsSQL(IJob $Job, array $columns)
     {
+        $Pdo = static::getPdo($Job);
         return ' (' . implode(',', array_map([$Pdo, 'quoteIdentifier'], $columns)) . ')';
     }
 
-    protected static function generateRowSQL(PostgresConnection $Pdo, array $record)
+    protected static function generateRowSQL(IJob $Job, array $record)
     {
+        $Pdo = static::getPdo($Job);
         return '('. implode(', ', array_map([$Pdo, 'quoteValue'], array_values($record))).')';
     }
 
-    protected static function createBackupTableAndCopyData(PostgresConnection $Pdo, array $scriptCfg)
+    protected static function createBackupTableAndCopyData(IJob $Job, array $scriptCfg)
     {
         $schema = static::$postgresSchema;
         $tempTable = $scriptCfg['table'] . '_bak';
-        $tempTableExists = $Pdo->oneRow("SELECT to_regclass('{$schema}.{$tempTable}') as exists");
 
-        if (empty($tempTableExists['exists'])) {
-            // create backup table
-            $Pdo->execute("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all)");
-        } else {
-            $Pdo->execute("TRUNCATE TABLE $schema.$tempTable");
-        }
+        static::retry($Job, function() use($Job, $scriptCfg, $schema, $tempTable) {
+            $Pdo = static::getPdo($Job);
+            $tempTableExists = $Pdo->oneRow("SELECT to_regclass('{$schema}.{$tempTable}') as exists");
+            if (empty($tempTableExists['exists'])) {
+                // create backup table
+                $Pdo->execute("CREATE TABLE $schema.{$tempTable} (like $schema.{$scriptCfg['table']} including all)");
+            } else {
+                $Pdo->execute("TRUNCATE TABLE $schema.$tempTable");
+            }
 
-        // copy data
-        $Pdo->execute("INSERT INTO $schema.{$tempTable} SELECT * FROM $schema.{$scriptCfg['table']}");
+            // copy data
+            $Pdo->execute("INSERT INTO $schema.{$tempTable} SELECT * FROM $schema.{$scriptCfg['table']}");
+        }, [PDOException::class], 5, 15, 2, function() use ($Job) {
+            static::getPdo($Job, true);
+        });
 
         return $tempTable;
     }
 
-    protected static function truncateOriginalTable(PostgresConnection $Pdo, array $scriptCfg)
+    protected static function truncateOriginalTable(IJob $Job, array $scriptCfg)
     {
         $schema = static::$postgresSchema;
         // truncate original table, and insert rows
-        $Pdo->execute("TRUNCATE TABLE $schema.{$scriptCfg['table']} RESTART IDENTITY");
+        static::retry($Job, function() use($Job, $schema, $scriptCfg) {
+            $Pdo = static::getPdo($Job);
+            $Pdo->execute("TRUNCATE TABLE $schema.{$scriptCfg['table']} RESTART IDENTITY");
+        }, [PDOException::class], 5, 15, 2, function() use ($Job) {
+            static::getPdo($Job, true);
+        });
     }
 
-    protected static function dropBackupTables(PostgresConnection $Pdo, array $backupTables)
+    protected static function dropBackupTables(IJob $Job, array $backupTables)
     {
         $schema = static::$postgresSchema;
         foreach ($backupTables as $backup) {
-            $Pdo->execute("DROP TABLE $schema.$backup");
+            static::retry($Job, function() use($Job, $schema, $backup) {
+                $Pdo = static::getPdo($Job);
+                $Pdo->execute("DROP TABLE $schema.$backup");
+            }, [PDOException::class], 5, 15, 2, function() use ($Job) {
+                static::getPdo($Job, true);
+            });
         }
     }
 }
