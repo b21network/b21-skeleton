@@ -361,7 +361,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         if ($Pdo === null || $reconnect === true) {
             if ($reconnect === true) {
                 $Job->log(
-                    LogLevel::DEBUG,
+                    LogLevel::WARNING,
                     'Attempting to reconnect...'
                 );
             }
@@ -399,7 +399,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             }
 
             $Job->log(
-                LogLevel::ERROR,
+                LogLevel::WARNING,
                 'Error: {errorMessage}',
                 [
                     'errorMessage' => $e->getMessage()
