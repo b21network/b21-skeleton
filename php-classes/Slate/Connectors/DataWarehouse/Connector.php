@@ -26,6 +26,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
     public static $postgresDatabase;
     public static $postgresSchema;
 
+    public static $successWebhookUrl;
     public static $chunkInserts = 1000;
 
     public static $exports = [
@@ -164,6 +165,10 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
         try {
             $results['push-exports'] = static::pushExports($Job, $pretend);
             $Job->Status = 'Completed';
+
+            if (static::$successWebhookUrl) {
+                file_get_contents(static::$successWebhookUrl);
+            }
         } catch (\Exception $e) {
             $Job->logException($e);
             $Job->Status = 'Failed';
