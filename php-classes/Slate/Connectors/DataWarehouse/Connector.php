@@ -50,7 +50,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             'table' => 'studentcompetency',
             'query' => [],
             'headers' => [
-                'ID' => 'studentcompetencyslatepk',
+                'ID' => 'studentcompetencyid',
                 'StudentNumber' => 'studentnumber',
                 'CompetencyCode' => 'competency',
                 'Level' => 'portfolio',
@@ -70,7 +70,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
                 'term' => '*current-master'
             ],
             'headers' => [
-                'StudentTaskID' => 'studenttaskslatepk',
+                'StudentTaskID' => 'studenttaskid',
                 'StudentNumber' => 'studentnumber',
                 'TaskTitle' => 'tasktitle',
                 'TaskExperienceType' => 'experiencetype',
@@ -115,7 +115,7 @@ class Connector extends \Emergence\Connectors\AbstractConnector implements \Emer
             'headers' => [
                 'StudentNumber' => 'studentnumber',
                 'Created' => 'created',
-                'DemonstrationSkillID' => 'studentratingslatepk',
+                'DemonstrationSkillID' => 'studentratingid',
                 'CreatorUsername' => 'teacherstafffk',
                 'Context' => 'experiencename',
                 'PerformanceType' => 'tasktitle',
