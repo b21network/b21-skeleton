@@ -3,7 +3,7 @@
 {block "meta"}
     {$dashboardTitle = "Progress Lookup"}
     {$dashboardType = "dashboards"}
-    {$dashboardId = 92}
+    {$dashboardId = 300}
     {$theme = "Staff_StudentPLP"}
     {$dwoo.parent}
 {/block}
