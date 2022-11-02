@@ -7,7 +7,7 @@ if (empty($GLOBALS['Session']) || !$GLOBALS['Session']->Person || !$GLOBALS['Ses
 //Slate\UI\Tools::$tools['<name>'] = '<URL>';
 Slate\UI\Tools::$tools = array_merge(Slate\UI\Tools::$tools, [
     'School Compass' => [
-        'Progress' => '/cbl/dashboards/admin/progress',
-
+        'Progress and Ratings' => '/cbl/dashboards/admin/progress-ratings',
+        'School Health' => '/cbl/dashboards/admin/school-health'
     ]
 ]);

@@ -1,9 +1,10 @@
+
 {extends "_template.tpl"}
 
 {block "meta"}
-    {$dashboardTitle = "Progress Lookup"}
+    {$dashboardTitle = "School Health"}
     {$dashboardType = "dashboards"}
-    {$dashboardId = 300}
+    {$dashboardId = 298}
     {$theme = "Staff_StudentPLP"}
     {$dwoo.parent}
 {/block}
