@@ -8,6 +8,7 @@ if (empty($GLOBALS['Session']) || !$GLOBALS['Session']->Person || !$GLOBALS['Ses
 Slate\UI\Tools::$tools = array_merge(Slate\UI\Tools::$tools, [
     'Staff Dashboards' => [
         'Progress Lookup' => '/cbl/dashboards/staff/progress-lookup',
-        'Student Log Lookup' => '/cbl/dashboards/staff/student-log-lookup'
+        'Student Log Lookup' => '/cbl/dashboards/staff/student-log-lookup',
+        'My Walk-throughs' => '/cbl/dashboards/staff/my-walkthroughs'
     ]
 ]);
