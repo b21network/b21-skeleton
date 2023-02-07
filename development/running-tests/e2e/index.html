@@ -17,7 +17,7 @@
         <link rel="next" href="../fixtures/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.8">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-9.0.11">
     
     
       
@@ -644,6 +644,13 @@
         <li class="md-nav__item">
   <a href="#testing-against-a-remote-server" class="md-nav__link">
     Testing against a remote server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-for-race-conditions" class="md-nav__link">
+    Checking for race conditions
   </a>
   
 </li>
@@ -2053,6 +2060,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#checking-for-race-conditions" class="md-nav__link">
+    Checking for race conditions
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2117,6 +2131,18 @@
 <p>Any changes you make will immediately be written to to your local project work tree ready to stage into a git commit, and filesystem change events will fire live for Cypress to auto-reload test suites as you work.</p>
 <p>The <strong>Open in IDE</strong> button that Cypress&rsquo; main window will how you as you hover over tests in the list can be used to open the copy of the file in the <code>merged</code> mount where changes will trigger auto-reload.</p>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Prevent VSCode from opening virtual repository</p>
+<p>By default, Visual Studio Code will automatically detect and open the &ldquo;merged&rdquo; git repository produced by the unionfs with its built-in git integration. This makes it difficult to close out the testing environment as VSCode will keep many active processes accessing the git repository once it has been opened, even after you manually close it.</p>
+<p>To prevent Visual Studio Code from automatically opening this union repository and causing all sorts of mahem, open your user <code>settings.json</code> and add an option to ignore the <code>*.cypress-workspace/merged</code> repository at whatever path your project repository lives at:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="nt">&quot;git.ignoredRepositories&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;/Users/me/Repositories/git@github.com:b21network/b21-skeleton.git.cypress-workspace/merged&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
 <h2 id="testing-against-a-remote-server">Testing against a remote server<a class="headerlink" href="#testing-against-a-remote-server" title="Permanent link"> ¶</a></h2>
 <p>By setting environment variables before launching the Cypress GUI, the E2E test suite can be configured to execute against a backend studio hosted on a remote machine or server.</p>
 <p>On the local terminal <strong>outside the studio</strong> in the root of your local project repository:</p>
@@ -2143,6 +2169,18 @@
 </code></pre></div>
 </li>
 </ol>
+<h2 id="checking-for-race-conditions">Checking for race conditions<a class="headerlink" href="#checking-for-race-conditions" title="Permanent link"> ¶</a></h2>
+<p>Cypress&rsquo; default timeout limits for UI assertions and XHR assertions vary greatly: 4 seconds for UI assertions and 30 seconds for XHR assertions. This disparity is a leading cause of apparent instability in Cypress tests where a test will pass locally consistently but fail in CI consistency.</p>
+<p>What causes this to happen is having UI assertions within your tests that won&rsquo;t pass if some XHR call leading up to them takes more than 4 seconds, which is more likely to happen occasionally on &ldquo;cold&rdquo; instances like CI runs always are. The solution to this is relatively simple: add a <code>cy.wait('@xhrInterceptName')</code> assertion <em>ahead</em> of any UI assertion that won&rsquo;t pass until that XHR call finishes. This ensures that the test script waits for XHR calls to finish under the longer timeout they have by default, and gives you more helpful errors when a failure happens at that level.</p>
+<p>It can be easy to miss these spots while you&rsquo;re developing tests. One step is to look through your test logs for all XHR calls (they&rsquo;ll show up in the actions log timeline whether you intercept or wait for them or not) and consider if any of the UI assertions surrounding it depend on it finishing first. Another approach is to introduce an artificial delay to all XHR calls on your local server, forcing them all to take longer than the default UI assertion timeout of 4 seconds:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?php</span>
+<span class="c1">// save to php-config/Site.config.d/delay-execute.php</span>
+
+<span class="nx">Site</span><span class="o">::</span><span class="nv">$onBeforeScriptExecute</span> <span class="o">=</span> <span class="k">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nb">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>With this change loaded up into your local studio, every request that isn&rsquo;t a static asset request will gain a 5 second delay upfront—forcing every UI assertion in your test that accidentally depends on an XHR call finishing in less than 4 seconds to fail. Spend one round after you finish your new Cypress tests checking them with this activated, and you can gain a lot of confidence it will work as consistently in CI as it does locally. Just be sure to discard this change when you&rsquo;re done and avoid committing it with your work—or add it to your local <code>.git/info/exclude</code> to keep it around entirely ignored by Git while you do your work.</p>
 
 
 
@@ -2183,7 +2221,7 @@
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs"], "search": "../../../assets/javascripts/workers/search.db81ec45.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.a00a7c5e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.6df46069.min.js"></script>
       
         <script src="https://unpkg.com/mermaid@8.5.0/dist/mermaid.min.js"></script>
       
