@@ -12,11 +12,7 @@ printf("Logging in as system user...\n");
 $_SESSION['User'] = User::getByUsername('system'); // run as system user
 
 $notifyEmails = [
-    'tom@b-21.org',
-    'eric@b-21.org',
-    'sandra@b-21.org',
-    'nafis@jarv.us',
-    'chris@jarv.us'
+    'dashboard-errors@b-21.org'
 ];
 
 printf("Creating job...\n");
