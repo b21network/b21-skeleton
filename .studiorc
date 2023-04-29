@@ -16,12 +16,6 @@ export PGPASSWORD='admin'
 export PGDATABASE='postgres'
 
 
-# load emergence studio
-
-hab pkg install emergence/studio
-source "$(hab pkg path emergence/studio)/studio.sh"
-
-
 # declare shortcuts
 STUDIO_HELP['load-cbl-branch <branch-name>']="Rebuild b21-skeleton on top of a different slate-cbl branch"
 load-cbl-branch() {
